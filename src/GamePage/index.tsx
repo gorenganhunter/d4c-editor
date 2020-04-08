@@ -29,6 +29,7 @@ const GamePage = () => {
     }
     const musicSrc = URL.createObjectURL(Music.musicfile)
     const game = new Game(canvas.current, {
+      skin: scope.settings.game.skin,
       judgeOffset: scope.settings.game.judge_offset,
       visualOffset: scope.settings.game.visual_offset,
       speed: scope.settings.game.speed,
@@ -42,7 +43,7 @@ const GamePage = () => {
       mirror: scope.settings.game.mirror,
       beatNote: scope.settings.game.beat_note
     }, {
-      musicSrc, backgroundSrc: Background.src, songName: scope.meta.name, skin: "/assets/skins/default",
+      musicSrc, backgroundSrc: Background.src, songName: scope.meta.name, skin: "/assets/skins/"+scope.settings.game.skin,
       mapContent: () => toGameContent(scope.map as any)
     })
     game.ondestroyed = () => {

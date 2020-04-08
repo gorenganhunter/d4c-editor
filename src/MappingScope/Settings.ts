@@ -30,6 +30,7 @@ export type Settings = {
   }
 
   game: {
+    skin: string
     judge_offset: number
     visual_offset: number
     speed: number
@@ -50,7 +51,7 @@ export const DefaultSettings: Settings = {
     warn_for_same_pos_notes: true, autosave_interval: 5,
   },
   game: {
-    judge_offset: 0, visual_offset: 0, speed: 10, resolution: 1.25, note_scale: 1, bar_opaciry: 0.9,
+    skin: 'default', judge_offset: 0, visual_offset: 0, speed: 10, resolution: 1.25, note_scale: 1, bar_opaciry: 0.9,
     show_sim_line: true, lane_effect: true, mirror: false, beat_note: true,
   }
 }
