@@ -43,7 +43,7 @@ const GamePage = () => {
       mirror: scope.settings.game.mirror,
       beatNote: scope.settings.game.beat_note
     }, {
-      musicSrc, backgroundSrc: Background.src, songName: scope.meta.name, skin: "/assets/skins/"+scope.settings.game.skin,
+      musicSrc, backgroundSrc: Background.src, songName: scope.meta.name, skin: process.env.PUBLIC_URL + "/assets/skins/"+scope.settings.game.skin,
       mapContent: () => toGameContent(scope.map as any)
     })
     game.ondestroyed = () => {
