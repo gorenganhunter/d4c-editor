@@ -166,6 +166,7 @@ const Game = () => {
                     <MenuItem value={'cafe'}>请问您今天要来点兔子吗？</MenuItem>
                     <MenuItem value={'miku'}>初音未来</MenuItem>
                     <MenuItem value={'maid'}>Re：从零开始的异世界生活</MenuItem>
+                    <MenuItem value={'april_fool'}>愚人节</MenuItem>
                 </Select>
             </FormControl>
         </Grid>

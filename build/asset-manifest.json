@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/ebbb/static/css/main.5238747f.chunk.css",
-    "main.js": "/ebbb/static/js/main.c4145ba8.chunk.js",
-    "main.js.map": "/ebbb/static/js/main.c4145ba8.chunk.js.map",
+    "main.js": "/ebbb/static/js/main.73189880.chunk.js",
+    "main.js.map": "/ebbb/static/js/main.73189880.chunk.js.map",
     "runtime-main.js": "/ebbb/static/js/runtime-main.e3e15f4b.js",
     "runtime-main.js.map": "/ebbb/static/js/runtime-main.e3e15f4b.js.map",
     "static/js/2.4e954a57.chunk.js": "/ebbb/static/js/2.4e954a57.chunk.js",
     "static/js/2.4e954a57.chunk.js.map": "/ebbb/static/js/2.4e954a57.chunk.js.map",
     "index.html": "/ebbb/index.html",
-    "precache-manifest.afa3b162c9a7e81c65ab3f0908b802ca.js": "/ebbb/precache-manifest.afa3b162c9a7e81c65ab3f0908b802ca.js",
+    "precache-manifest.424ef4f6f8e81540599bc0b2ccc4d730.js": "/ebbb/precache-manifest.424ef4f6f8e81540599bc0b2ccc4d730.js",
     "service-worker.js": "/ebbb/service-worker.js",
     "static/css/main.5238747f.chunk.css.map": "/ebbb/static/css/main.5238747f.chunk.css.map",
     "static/js/2.4e954a57.chunk.js.LICENSE.txt": "/ebbb/static/js/2.4e954a57.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.e3e15f4b.js",
     "static/js/2.4e954a57.chunk.js",
     "static/css/main.5238747f.chunk.css",
-    "static/js/main.c4145ba8.chunk.js"
+    "static/js/main.73189880.chunk.js"
   ]
 }
