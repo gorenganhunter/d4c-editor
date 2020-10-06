@@ -21,6 +21,5 @@ export function toGameContent(map: EditMap): RawMap {
       notes.push({ type: "slide", time: n.realtimecache, lane: n.lane, slideid: slideIdIndex[n.slide] })
   }
 
-  console.log({ notes, slides })
   return { notes, slides }
 }
