@@ -162,11 +162,13 @@ const Game = () => {
                 <Select value={scope.settings.game.skin}
                         onChange={e => scope.settings.game.skin = e.target.value as string}>
                     <MenuItem value={'default'}>默认</MenuItem>
-                    <MenuItem value={'persona'}>女神异闻录persona</MenuItem>
+                    <MenuItem value={'skin04'}>皮肤5</MenuItem>
+                    <MenuItem value={'persona'}>女神异闻录persona[不可用]</MenuItem>
                     <MenuItem value={'cafe'}>请问您今天要来点兔子吗？</MenuItem>
                     <MenuItem value={'miku'}>初音未来</MenuItem>
                     <MenuItem value={'maid'}>Re：从零开始的异世界生活</MenuItem>
                     <MenuItem value={'april_fool'}>愚人节</MenuItem>
+                    <MenuItem value={'coin'}>某科学的超电磁炮T</MenuItem>
                 </Select>
             </FormControl>
         </Grid>
