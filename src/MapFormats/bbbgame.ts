@@ -1,4 +1,4 @@
-import { RawMap, NoteType, Slide } from "bangbangboom-game"
+import { RawMap, NoteType, Slide } from "bangbangboom-game/build/Core/RawMap"
 import { EditMap } from "../MappingScope/EditMap"
 
 export function toGameContent(map: EditMap): RawMap {
