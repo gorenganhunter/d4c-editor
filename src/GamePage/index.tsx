@@ -43,7 +43,7 @@ const GamePage = () => {
       beatNote: scope.settings.game.beat_note
     }, {
       musicSrc,
-      backgroundSrc: Background.src,
+      backgroundSrc: Background.src || process.env.PUBLIC_URL + '/assets/mapping/bg_normal.png',
       songName: scope.meta.name,
       skin: process.env.PUBLIC_URL + "/assets/skins/" + scope.settings.game.skin,
       sound: process.env.PUBLIC_URL + "/assets/skins/" + scope.settings.game.skin,
