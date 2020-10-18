@@ -17,17 +17,19 @@ const useStyles = makeStyles(theme => ({
 const dialog = observable({
   open: false,
   content: "",
-  title: ""
+  title: "",
+  copy: ""
 })
 
-export const openDialog = action(function (title: string, content: string) {
+export const openDialog = action(function (title: string, content: string, copy = content as string) {
   dialog.open = true
   dialog.content = content
   dialog.title = title
+  dialog.copy = copy
 })
 
 const copy = () => {
-  navigator.clipboard.writeText(dialog.content)
+  navigator.clipboard.writeText(dialog.copy)
 }
 
 const onfocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {

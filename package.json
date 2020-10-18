@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.9.4",
     "@material-ui/icons": "^4.9.1",
+    "axios": "^0.20.0",
     "bangbangboom-game": "git+https://gitee.com/ReiKohaku/bangbangboom-game",
     "clsx": "^1.1.0",
     "hotkeys-js": "^3.7.3",
