@@ -102,6 +102,46 @@ const upload = async () => {
     }
 }
 
+let uploadingToAyaSonolus = false;
+
+const uploadToAyaSonolus = async () => {
+    let onProcess = false;
+    try {
+        if (uploadingToAyaSonolus) throw new Error('There is already a chart being uploaded')
+        onProcess = true;
+        uploadingToAyaSonolus = true;
+        const notes = JSON.parse(toBestdoriFormat((scope.map as any).state))
+        if (!Music.musicfile) throw new Error('No audio import')
+        userMessage(i18n.t('Uploading audio'), 'info')
+        const axios = require('axios');
+        const fileObj = new FormData();
+        fileObj.append('file', Music.musicfile as Blob);
+        let uploadMusicResult = (await axios.post('https://upload.ayachan.fun:24444/Sonolus', fileObj, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })).data;
+        if (!uploadMusicResult.result) throw new Error(uploadMusicResult.error);
+        userMessage(i18n.t('Uploading chart'), 'info')
+        let uploadChartResult =
+            (await axios.post('https://api.ayachan.fun/Sonolus/Upload', {
+                notes,
+                bgm: uploadMusicResult.filename,
+                title: scope.meta.name,
+                "g-recaptcha-response": "77A22C8B6AE99D04"
+            })).data;
+        if (!uploadChartResult.result) throw new Error(uploadChartResult.error);
+        uploadingToAyaSonolus = false;
+        userMessage(i18n.t('Upload successfully', {id: uploadChartResult.id}), 'success')
+        openDialog(i18n.t("Test in Aya Sonolus Server"), i18n.t("Test Tips of Aya Sonolus Server", {id: uploadChartResult.id}), `${uploadChartResult.id}`);
+    } catch (error) {
+        if (onProcess) uploadingToAyaSonolus = false;
+        if (!error) return
+        userMessage(i18n.t(error.message), "error")
+        throw error
+    }
+}
+
 const Actions = () => {
 
     const {t} = useTranslation()
@@ -137,6 +177,11 @@ const Actions = () => {
             <Grid item>
                 <Button fullWidth variant="outlined" onClick={upload}>
                     {t("Upload to test server")}
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button fullWidth variant="outlined" onClick={uploadToAyaSonolus}>
+                    {t("Upload to Aya Sonolus server")}
                 </Button>
             </Grid>
         </Grid>)
