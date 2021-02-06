@@ -70,12 +70,12 @@ export class MapActions extends MapActionsBase {
   }
 
   @action.bound
-  addSlide(tp1: number, off1: number, lane1: number, tp2: number, off2: number, lane2: number) {
+  addSlide(tp1: number, off1: number, lane1: number, tp2: number, off2: number, lane2: number, islaser?: boolean) {
     const sid = randomId()
     return this.done(this.history.doTransaction(() =>
       this.history.callAtom(SlideActions.Add, sid, false) &&
-      this.history.callAtom(SlideNoteActions.Add, randomId(), sid, tp1, off1, lane1) &&
-      this.history.callAtom(SlideNoteActions.Add, randomId(), sid, tp2, off2, lane2)))
+      this.history.callAtom(SlideNoteActions.Add, randomId(), sid, tp1, off1, lane1, islaser) &&
+      this.history.callAtom(SlideNoteActions.Add, randomId(), sid, tp2, off2, lane2, islaser)))
   }
 
   @action.bound
@@ -86,9 +86,9 @@ export class MapActions extends MapActionsBase {
   }
 
   @action.bound
-  addSlideMid(slide: number, timepoint: number, offset: number, lane: number) {
+  addSlideMid(slide: number, timepoint: number, offset: number, lane: number, islaser?: boolean) {
     return this.done(this.history.doTransaction(() =>
-      this.history.callAtom(SlideNoteActions.Add, randomId(), slide, timepoint, offset, lane)))
+      this.history.callAtom(SlideNoteActions.Add, randomId(), slide, timepoint, offset, lane, islaser)))
   }
 
   @action.bound

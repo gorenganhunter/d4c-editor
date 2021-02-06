@@ -155,20 +155,27 @@ const Note = ({ note }: { note: NoteType }) => {
       return {}
     }
     switch (note.type) {
-      case "single": src = assets.note_normal; break
-      case "flick": src = assets.note_flick; break
+      case "single": src = assets.d4dj_tap; break
+      case "flick": src = (note.lane == 0 || note.lane == 6) ? assets.d4dj_flick : assets.d4dj_slide_flick ; break
       case "slide":
         const slide = assert(scope.map.slides.get(note.slide))
-        if (note.id === slide.notes[0]) {
-          src = assets.note_long
-        } else if (note.id === slide.notes[slide.notes.length - 1]) {
-          if (slide.flickend)
-            src = assets.note_flick
-          else
-            src = assets.note_long
-        } else {
-          src = assets.note_slide_among
+        if(note.islaser)
+        {
+          if (note.id === slide.notes[slide.notes.length - 1] && slide.flickend) {
+            src = assets.d4dj_slide_flick;
+          } else {
+            src = assets.d4dj_slide;
+          }
         }
+        else if(note.lane == 0 || note.lane == 6)
+        {
+          src = assets.d4dj_stop;
+        }
+        else
+        {
+          src = assets.d4dj_hold;
+        }
+
         break
       default: neverHappen()
     }

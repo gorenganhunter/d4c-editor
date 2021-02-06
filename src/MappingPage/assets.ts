@@ -9,6 +9,12 @@ const assets = {
   perfect: "/assets/mapping/perfect.mp3",
   flick: "/assets/mapping/flick.mp3",
   long: "/assets/mapping/long.mp3",
+  d4dj_tap: "/assets/mapping/d4dj_tap.png",
+  d4dj_stop: "/assets/mapping/d4dj_stop.png",
+  d4dj_slide: "/assets/mapping/d4dj_slide.png",
+  d4dj_slide_flick: "/assets/mapping/d4dj_slide_flick.png",
+  d4dj_hold: "/assets/mapping/d4dj_hold.png",
+  d4dj_flick: "/assets/mapping/d4dj_flick.png",
 }
 
 for (const k in assets) {

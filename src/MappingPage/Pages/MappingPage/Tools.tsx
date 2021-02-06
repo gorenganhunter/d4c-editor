@@ -50,7 +50,8 @@ const SelectTool = () => {
   useEffect(() => addHotkey("1", () => MappingState.tool = "none"), [])
   useEffect(() => addHotkey("2", () => MappingState.tool = "single"), [])
   useEffect(() => addHotkey("3", () => MappingState.tool = "slide"), [])
-  useEffect(() => addHotkey("4", () => MappingState.tool = "delete"), [])
+  useEffect(() => addHotkey("4", () => MappingState.tool = "laser"), [])
+  useEffect(() => addHotkey("5", () => MappingState.tool = "delete"), [])
 
   return useObserver(() =>
     <Grid item>
@@ -79,8 +80,11 @@ const SelectTool = () => {
         <FormControlLabel value="slide" control={<Radio />}
           label={<img className={cn.toolimg} src={assets.note_long} alt="Slide" />}
           title={t("Hotkey: {{ hotkey }}", { hotkey: "3" })} />
+        <FormControlLabel value="laser" control={<Radio />}
+          label={t("Laser")}
+          title={t("Hotkey: {{ hotkey }}", { hotkey: "4" })} />
         <FormControlLabel value="delete" control={<Radio />}
-          label={t("Delete")} title={t("Hotkey: {{ hotkey }}", { hotkey: "4 / Right click" })} />
+          label={t("Delete")} title={t("Hotkey: {{ hotkey }}", { hotkey: "5 / Right click" })} />
       </RadioGroup>
     </Grid>)
 }

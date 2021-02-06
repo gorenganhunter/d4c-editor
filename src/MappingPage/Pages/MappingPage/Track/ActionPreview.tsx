@@ -25,6 +25,7 @@ const PointerPos = () => {
     switch (MappingState.tool) {
       case "single": color = "#0088ff"; break
       case "slide": color = "#00ff88"; break
+      case "laser": color = "#ff60a0"; break
       case "delete": color = "#ff4444"; break
     }
     return {

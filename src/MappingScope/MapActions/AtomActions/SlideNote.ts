@@ -4,11 +4,12 @@ import { makeAction } from "./types"
 import { observable } from "mobx"
 
 
-const add = (map: EditMap, id: number, slide: number, timepoint: number, offset: number, lane: number) => {
+const add = (map: EditMap, id: number, slide: number, timepoint: number, offset: number, lane: number, islaser?: boolean) => {
   const note: SlideNote = observable({
     type: "slide",
     id, slide, timepoint, offset, lane,
-    realtimecache: 0
+    realtimecache: 0,
+    islaser: islaser
   })
 
   const s = assert(map.slides.get(slide))
@@ -52,8 +53,8 @@ const setv = (map: EditMap, id: number, patch: PatchType) => {
 }
 
 export const SlideNoteActions = {
-  Add: makeAction((map: EditMap, id: number, slide: number, timepoint: number, offset: number, lane: number) => {
-    const res = add(map, id, slide, timepoint, offset, lane)
+  Add: makeAction((map: EditMap, id: number, slide: number, timepoint: number, offset: number, lane: number, islaser?: boolean) => {
+    const res = add(map, id, slide, timepoint, offset, lane, islaser)
     if (res)
       return (map: EditMap) => del(map, res.id)
   }),

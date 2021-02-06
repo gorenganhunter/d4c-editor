@@ -124,6 +124,16 @@ const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
         state.slideNote1Lane = lane
       }
       break
+    case "laser":
+      if (state.slideNote1Beat) {
+        scope.map.addSlide(state.slideNote1Beat.timepoint.id, state.slideNote1Beat.offset, state.slideNote1Lane,
+          beat.timepoint.id, beat.offset, lane, true)
+        state.slideNote1Beat = undefined
+      } else {
+        state.slideNote1Beat = beat
+        state.slideNote1Lane = lane
+      }
+      break
     default:
       return
   }

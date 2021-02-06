@@ -13,7 +13,13 @@ export const useNoteStyles = makeStyles(theme => ({
   },
   noevent: { pointerEvents: "none" },
   slidebar: {
-    background: "greenyellow", opacity: 0.2, width: "10%", position: "absolute", pointerEvents: "auto",
+    background: "yellow", opacity: 0.7, width: "10%", position: "absolute", pointerEvents: "auto",
+  },
+  laser: {
+    background: "#ff60a0", opacity: 0.7, width: "1%", position: "absolute", pointerEvents: "auto",
+  },
+  stop: {
+    background: "red", opacity: 0.7, width: "10%", position: "absolute", pointerEvents: "auto",
   },
   selection: {
     position: "absolute", pointerEvents: "none", background: "gray",

@@ -50,6 +50,8 @@ export type SlideNote = {
    * slide id
    */
   slide: number
+  islaser?: boolean
+  direction?: number
 } & TimedPosition
 
 export type NoteType = SingleNote | FlickNote | SlideNote

@@ -15,15 +15,22 @@ const clickHandler = (slide: number) => {
     if (!beat || lane < 0) return
     e.stopPropagation()
 
-    scope.map.addSlideMid(slide, beat.timepoint.id, beat.offset, lane)
+    const s = assert(scope.map.slides.get(slide))
+    const firstNote = assert(scope.map.notes.get(s.notes[0])) as SlideNote
+
+    if(!firstNote.islaser)
+      return;
+
+    scope.map.addSlideMid(slide, beat.timepoint.id, beat.offset, lane, firstNote.islaser)
   }
 }
 
 const Bar = ({ from, to, layerWidth }: { from: NoteType, to: NoteType, layerWidth: number }) => {
-
+  const note = from as SlideNote;
   const cn = useNoteStyles()
 
   const style = useObserver(() => {
+
     const bottom = from.realtimecache * MappingState.timeHeightFactor
     const top = to.realtimecache * MappingState.timeHeightFactor
     const dh = top - bottom
@@ -32,7 +39,7 @@ const Bar = ({ from, to, layerWidth }: { from: NoteType, to: NoteType, layerWidt
       bottom: bottom + "px",
       height: dh + "px",
       transform: `skew(${Math.atan2(dw, dh)}rad)`,
-      left: (from.lane + to.lane) * 5 + 15 + "%",
+      left: (from.lane + to.lane) * 5 + (note.islaser ? 19.5 : 15) + "%",
     }
   })
 
@@ -40,7 +47,9 @@ const Bar = ({ from, to, layerWidth }: { from: NoteType, to: NoteType, layerWidt
 
   const handler = useMemo(() => clickHandler(slide), [slide])
 
-  return <div className={cn.slidebar} onClick={handler} style={style}></div>
+  const classname = note.islaser ? cn.laser : ((note.lane == 0 || note.lane == 6) ? cn.stop : cn.slidebar);
+
+  return <div className={classname} onClick={handler} style={style}></div>
 }
 
 const forEachBar = (cb: (from: SlideNote, to: SlideNote) => any) => {
