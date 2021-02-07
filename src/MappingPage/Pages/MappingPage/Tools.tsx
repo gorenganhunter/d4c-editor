@@ -75,13 +75,13 @@ const SelectTool = () => {
         <FormControlLabel value="none" control={<Radio />}
           label={t("None")} title={t("Hotkey: {{ hotkey }}", { hotkey: "1" })} />
         <FormControlLabel value="single" control={<Radio />}
-          label={<img className={cn.toolimg} src={assets.note_normal} alt="Single / Flick" />}
+          label={t("Tap/Scratch/Single Slide")}
           title={t("Hotkey: {{ hotkey }}", { hotkey: "2" })} />
         <FormControlLabel value="slide" control={<Radio />}
-          label={<img className={cn.toolimg} src={assets.note_long} alt="Slide" />}
+          label={t("Hold/Stop")}
           title={t("Hotkey: {{ hotkey }}", { hotkey: "3" })} />
         <FormControlLabel value="laser" control={<Radio />}
-          label={t("Laser")}
+          label={t("Slide")}
           title={t("Hotkey: {{ hotkey }}", { hotkey: "4" })} />
         <FormControlLabel value="delete" control={<Radio />}
           label={t("Delete")} title={t("Hotkey: {{ hotkey }}", { hotkey: "5 / Right click" })} />

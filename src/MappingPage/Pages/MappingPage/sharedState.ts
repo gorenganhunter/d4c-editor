@@ -31,7 +31,7 @@ class State {
   }
   @observable tracking = false
   @observable timeHeightFactor = 400
-  @observable division = 1
+  @observable division = 4
   @observable tool = "none" as ToolTypes
 
   // we mirror 1. notes layer (and bar layer) 2. action preview layer 3. input event handler
