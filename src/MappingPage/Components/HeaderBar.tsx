@@ -85,16 +85,14 @@ const HeaderActions = () => {
     },
     { children: <SaveIcon />, onClick: save, title: t("Hotkey: {{ hotkey }}", { hotkey: "ctrl + s" }) },
   ])
-  const actionlist2 = [
-    { children: <PlayCircleFilledIcon />, onClick: startGame },
-  ]
+  // const actionlist2 = [
+  //   { children: <PlayCircleFilledIcon />, onClick: startGame },
+  // ]
 
   return <>
     {actionlist1.map((item, i) =>
       <Box key={i}><IconButton {...item} /></Box>)}
     <Box width={2} />
-    {actionlist2.map((item, i) =>
-      <Box key={i}><IconButton {...item} /></Box>)}
   </>
 }
 

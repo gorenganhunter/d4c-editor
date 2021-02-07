@@ -70,9 +70,7 @@ const SelectBackground = () => {
 }
 
 const Inputs = () => <>
-  <MapName />
   <SelectMusic />
-  <SelectBackground />
 </>
 
 export default Inputs

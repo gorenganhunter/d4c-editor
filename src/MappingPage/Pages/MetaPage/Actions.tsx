@@ -9,6 +9,7 @@ import {scope} from "../../../MappingScope/scope"
 import {openConfirm} from "./ConfirmDialog"
 import {openFile, downLoadFile} from "../../../Common/utils"
 import {fromBBBv1Format} from "../../../MapFormats/bbbv1"
+import {toD4DJGameFormat} from "../../../MapFormats/d4dj"
 import {EditMap} from "../../../MappingScope/EditMap"
 import i18n from "../../../i18n"
 import {Music} from "../../../MappingPage/states"
@@ -30,6 +31,17 @@ const exportBestdori = () => {
         const content = toBestdoriFormat((scope.map as any).state)
         openDialog(i18n.t("Export Bestdori format map"), content)
     } catch (error) {
+        openDialog(i18n.t("An error occurred during export"), i18n.t("" + error))
+        userMessage(i18n.t("Error export"), "error")
+        throw error
+    }
+}
+
+const exportD4DJ = () => {
+    try {
+        const content = toD4DJGameFormat((scope.map as any).state)
+        downLoadFile(content, "chart_00000014.json")
+    } catch(error) {
         openDialog(i18n.t("An error occurred during export"), i18n.t("" + error))
         userMessage(i18n.t("Error export"), "error")
         throw error
@@ -150,16 +162,6 @@ const Actions = () => {
     return (
         <Grid style={{margin: "20px 0"}} item container direction="column" spacing={2}>
             <Grid item>
-                <Button fullWidth variant="outlined" onClick={importBBBv1}>
-                    {t("Import bangbangboom format v1 (current map will loss)")}
-                </Button>
-            </Grid>
-            <Grid item>
-                <Button fullWidth variant="outlined" onClick={exportBestdori}>
-                    {t("Export Bestdori format map")}
-                </Button>
-            </Grid>
-            <Grid item>
                 <Button fullWidth variant="outlined" onClick={exportEditorMap}>
                     {t("Download editor format map")}
                 </Button>
@@ -170,18 +172,13 @@ const Actions = () => {
                 </Button>
             </Grid>
             <Grid item>
+                <Button fullWidth variant="outlined" onClick={exportD4DJ}>
+                    {t("Download D4DJ Chart")}
+                </Button>
+            </Grid>
+            <Grid item>
                 <Button fullWidth variant="outlined" onClick={reset}>
                     {t("Reset current map")}
-                </Button>
-            </Grid>
-            <Grid item>
-                <Button fullWidth variant="outlined" onClick={upload}>
-                    {t("Upload to test server")}
-                </Button>
-            </Grid>
-            <Grid item>
-                <Button fullWidth variant="outlined" onClick={uploadToAyaSonolus}>
-                    {t("Upload to Aya Sonolus server")}
                 </Button>
             </Grid>
         </Grid>)

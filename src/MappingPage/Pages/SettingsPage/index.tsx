@@ -253,8 +253,6 @@ const SettingsPage = () => {
             <General/>
             <Divider style={{margin: "32px -24px", width: "30%"}}/>
             <Editor/>
-            <Divider style={{margin: "32px -24px", width: "30%"}}/>
-            <Game/>
         </Grid>)
 }
 

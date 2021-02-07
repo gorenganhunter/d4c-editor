@@ -169,14 +169,14 @@ export function range(from: number, to?: number, step?: number) {
   return res
 }
 
-export function downLoadFile(content: string | Blob) {
+export function downLoadFile(content: string | Blob, name?: string) {
   if (typeof content === "string")
     content = new Blob([content])
   const url = URL.createObjectURL(content)
   const a = document.createElement("a")
   a.style.display = "none"
   a.href = url
-  a.download = (scope.meta.name || "No title") + " - bbbEditor.json"
+  a.download = name != undefined ? name : (scope.meta.name || "No title") + " - bbbEditor.json"
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)

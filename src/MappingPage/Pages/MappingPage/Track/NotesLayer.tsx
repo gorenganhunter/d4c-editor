@@ -203,7 +203,14 @@ const Note = ({ note }: { note: NoteType }) => {
             case "slide":
                 const slide = assert(scope.map.slides.get(note.slide));
                 if (note.islaser) {
-                    src = assets.d4dj_slide;
+                    if (
+                        note.id === slide.notes[slide.notes.length - 1] &&
+                        slide.flickend
+                    ) {
+                        src = assets.d4dj_slide_flick;
+                    } else {
+                        src = assets.d4dj_slide;
+                    }
                 } else if (note.lane == 0 || note.lane == 6) {
                     src = assets.d4dj_stop;
                 } else {
