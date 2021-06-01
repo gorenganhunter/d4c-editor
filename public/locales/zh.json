@@ -96,5 +96,6 @@
     "Test Tips": "您可以通过以下所述的方法测试您的谱面：\r1、打开BanG Player v2（https://cn.bangplayer.live）；\r2、进入主界面后，点击“bangbangboom editor测试”按钮；\r3、在弹出的对话框中输入 {{id}} 后点击确认；\r4、加载完毕后点击“开始演出吧！”按钮。\r提示：这个测试ID（{{id}}）将会在约1个小时后过期，请您测试时注意时间。",
     "Test in Aya Sonolus Server": "在 @彩绫与6QHTSK 的Sonolus测试服务器中测试",
     "Test Tips of Aya Sonolus Server": "您可以通过以下所述的方法测试您的谱面：\r1、打开Sonolus（官网：https://sonolus.com）；\r2、进入测试服务器（地址：http://test.sonolus.ayachan.fun/0.4.8/bestdori）；\r3、找到ID为 {{id}} 的谱面进行测试。\r提示：这个测试ID（{{id}}）将会在约6个小时后过期，请您测试时注意时间。",
-    "Download D4DJ Chart": "导出 D4DJ 谱面"
+    "Download D4DJ Chart": "导出 D4DJ 谱面",
+    "Please replace the corresponding item in ChartNoteCountMaster with this:": "请用以下内容替换 ChartNoteCountMaster 中对应的项目:"
 }

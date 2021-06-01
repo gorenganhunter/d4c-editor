@@ -9,7 +9,7 @@ import {scope} from "../../../MappingScope/scope"
 import {openConfirm} from "./ConfirmDialog"
 import {openFile, downLoadFile} from "../../../Common/utils"
 import {fromBBBv1Format} from "../../../MapFormats/bbbv1"
-import {toD4DJGameFormat} from "../../../MapFormats/d4dj"
+import {toD4DJGameFormat, D4DJExport} from "../../../MapFormats/d4dj"
 import {EditMap} from "../../../MappingScope/EditMap"
 import i18n from "../../../i18n"
 import {Music} from "../../../MappingPage/states"
@@ -40,7 +40,8 @@ const exportBestdori = () => {
 const exportD4DJ = () => {
     try {
         const content = toD4DJGameFormat((scope.map as any).state)
-        downLoadFile(content, "chart_00000014.json")
+        downLoadFile(content.chart, "chart_00000014.json")
+        openDialog(i18n.t("Please replace the corresponding item in ChartNoteCountMaster with this:"), content.noteCount)
     } catch(error) {
         openDialog(i18n.t("An error occurred during export"), i18n.t("" + error))
         userMessage(i18n.t("Error export"), "error")

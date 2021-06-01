@@ -45,8 +45,13 @@ type ChartData = {
     NoteDataList: NoteData[];
 };
 
+export type D4DJExport = {
+    chart: string;
+    noteCount: string;
+}
+
 // thanks maomao
-export function toD4DJGameFormat(map: EditMap): string {
+export function toD4DJGameFormat(map: EditMap): D4DJExport {
     const len = Music.duration;
 
     const chartData: ChartData = {
@@ -66,7 +71,7 @@ export function toD4DJGameFormat(map: EditMap): string {
         const tpb = 60 / (tp.bpm / tp.bpb);
 
         for (let t = tp.time; t < et; t += tpb) {
-          chartData.BarLineList.push(Math.round(t * 100000) / 100000);
+            chartData.BarLineList.push(Math.round(t * 100000) / 100000);
         }
     });
 
@@ -80,8 +85,7 @@ export function toD4DJGameFormat(map: EditMap): string {
         const tp = assert(map.timepoints.get(note.timepoint));
         const tpOffset = 60 / (tp.bpm * 48);
 
-        const time = tp.time / 1000 + note.offset * tpOffset;
-
+        const time = tp.time + note.offset * tpOffset;
         const d4djNote: NoteData = {
             LaneId: note.lane,
             Time: time,
@@ -95,9 +99,35 @@ export function toD4DJGameFormat(map: EditMap): string {
         if (note.type === "flick") {
             switch (note.lane) {
                 case 0:
+                    chartData.SoflanDataList.push({
+                        Time: time,
+                        TimeScale: 1.0,
+                        LeftRight: 1
+                    });
+
+                    chartData.SoflanDataList.push({
+                        // 1/8 beat
+                        Time: time + tpOffset * 6,
+                        TimeScale: 1.0,
+                        LeftRight: 1
+                    });
+
                     d4djNote.Type = D4DJNoteType.ScratchLeft;
                     break;
                 case 6:
+                    chartData.SoflanDataList.push({
+                        Time: time,
+                        TimeScale: 1.0,
+                        LeftRight: 2
+                    });
+
+                    chartData.SoflanDataList.push({
+                        // 1/8 beat
+                        Time: time + tpOffset * 6,
+                        TimeScale: 1.0,
+                        LeftRight: 2
+                    });
+
                     d4djNote.Type = D4DJNoteType.ScratchRight;
                     break;
                 default:
@@ -105,12 +135,17 @@ export function toD4DJGameFormat(map: EditMap): string {
             }
         } else if (note.type === "single") {
             d4djNote.Type =
-                note.offset % 4 === 0 ? D4DJNoteType.Tap1 : D4DJNoteType.Tap2;
+                note.offset % 12 === 0 ? D4DJNoteType.Tap1 : D4DJNoteType.Tap2;
         } else if (note.type === "slide") {
-            if (note.lane === 0 || note.lane === 6)
+            if (note.lane === 0 || note.lane === 6) {
                 d4djNote.Type = D4DJNoteType.StopStart;
-            else if (note.islaser) d4djNote.Type = D4DJNoteType.Slide;
-            else d4djNote.Type = D4DJNoteType.LongStart;
+
+            }
+            else if (note.islaser) {
+                d4djNote.Type = D4DJNoteType.Slide;
+            } else {
+                d4djNote.Type = D4DJNoteType.LongStart;
+            }
 
             const slide = assert(map.slides.get(note.slide));
             const slideNotes = Object.values(slide.notes);
@@ -131,6 +166,20 @@ export function toD4DJGameFormat(map: EditMap): string {
                 const next = chartNotes.findIndex((n) => n.id === nextId);
                 d4djNote.NextId = next;
             }
+
+            if (d4djNote.Type == D4DJNoteType.StopStart) {
+                chartData.SoflanDataList.push({
+                    Time: time,
+                    TimeScale: 0,
+                    LeftRight: note.lane === 0 ? 1 : 2,
+                });
+            } else if (d4djNote.Type == D4DJNoteType.StopEnd) {
+                chartData.SoflanDataList.push({
+                    Time: time,
+                    TimeScale: 1.0,
+                    LeftRight: note.lane === 0 ? 1 : 2,
+                });
+            }
         }
 
         chartData.NoteDataList.push(d4djNote);
@@ -150,5 +199,14 @@ export function toD4DJGameFormat(map: EditMap): string {
         }
     });
 
-    return JSON.stringify(chartData);
+    const str = `"(14, Full)": {
+      "ChartId": 14,
+      "Section": "Full",
+      "Count": ${chartData.NoteDataList.length}
+},`;
+
+    return {
+        chart: JSON.stringify(chartData),
+        noteCount: str
+    };
 }
