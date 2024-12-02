@@ -5,7 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.9.4",
     "@material-ui/icons": "^4.9.1",
-    "axios": "^0.20.0",
+    "axios": "^1.7.8",
     "bangbangboom-game": "git+https://gitee.com/ReiKohaku/bangbangboom-game",
     "clsx": "^1.1.0",
     "hotkeys-js": "^3.7.3",
@@ -48,7 +48,7 @@
     "@types/node": "^12.12.28",
     "@types/react": "^16.9.22",
     "@types/react-dom": "^16.9.5",
-    "react-scripts": "3.3.1",
+    "react-scripts": "^5.0.1",
     "typescript": "^3.8.2"
   }
 }
