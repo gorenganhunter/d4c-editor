@@ -3,20 +3,20 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.9.4",
-    "@material-ui/icons": "^4.9.1",
-    "axios": "^1.7.8",
+    "@mui/material": "^6.3.0",
+    "@mui/icons-material": "^6.3.0",
+    "axios": "^1.7.9",
     "bangbangboom-game": "git+https://gitee.com/ReiKohaku/bangbangboom-game",
-    "clsx": "^1.1.0",
-    "hotkeys-js": "^3.7.3",
-    "i18next": "^19.3.2",
-    "i18next-browser-languagedetector": "^4.0.2",
+    "clsx": "^2.1.1",
+    "hotkeys-js": "^3.13.9",
+    "i18next": "^24.2.0",
+    "i18next-browser-languagedetector": "^8.0.2",
     "i18next-xhr-backend": "^3.2.2",
-    "mobx": "^5.15.4",
-    "mobx-react-lite": "^1.5.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-i18next": "^11.3.3"
+    "mobx": "^6.13.5",
+    "mobx-react-lite": "^4.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-i18next": "^15.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -44,11 +44,14 @@
     ]
   },
   "devDependencies": {
-    "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.28",
-    "@types/react": "^16.9.22",
-    "@types/react-dom": "^16.9.5",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
     "react-scripts": "^5.0.1",
-    "typescript": "^3.8.2"
+    "typescript": "^5.7.2"
+  },
+  "overrides": {
+    "typescript": "^5.7.2"
   }
 }
