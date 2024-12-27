@@ -1,15 +1,15 @@
 import React from "react"
 import { useObserver } from "mobx-react-lite"
-import Grid from "@material-ui/core/Grid"
+import Grid from "@mui/material/Grid"
 import NumberField from "../../../../Common/Components/NumberField"
 import { useTranslation } from "react-i18next"
 import { TimingState } from "../sharedState"
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore'
-import NavigateNextIcon from '@material-ui/icons/NavigateNext'
-import IconButton from "@material-ui/core/IconButton"
-import Button from "@material-ui/core/Button"
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import IconButton from "@mui/material/IconButton"
+import Button from "@mui/material/Button"
 import { Music } from "../../../states"
-import InputAdornment from "@material-ui/core/InputAdornment"
+import InputAdornment from "@mui/material/InputAdornment"
 import { TimeToString } from "../../../../Common/utils"
 
 const movebeat = (beats: number) => {

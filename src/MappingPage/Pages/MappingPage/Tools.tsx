@@ -1,26 +1,26 @@
 import React, { useEffect } from "react"
 import { useObserver } from "mobx-react-lite"
 import { MappingState, ToolTypes } from "./sharedState"
-import { makeStyles } from "@material-ui/core/styles"
-import Box from "@material-ui/core/Box"
-import Grid from "@material-ui/core/Grid"
+import { makeStyles } from "@mui/material/styles"
+import Box from "@mui/material/Box"
+import Grid from "@mui/material/Grid"
 import { useTranslation } from "react-i18next"
-import RadioGroup from "@material-ui/core/RadioGroup"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import Radio from "@material-ui/core/Radio"
+import RadioGroup from "@mui/material/RadioGroup"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import Radio from "@mui/material/Radio"
 import assets from "../../assets"
-import HelpIcon from '@material-ui/icons/Help'
-import ZoomInIcon from '@material-ui/icons/ZoomIn'
-import ZoomOutIcon from '@material-ui/icons/ZoomOut'
-import FormLabel from "@material-ui/core/FormLabel"
-import Tooltip from "@material-ui/core/Tooltip"
-import FormControl from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
-import Select from "@material-ui/core/Select"
-import MenuItem from "@material-ui/core/MenuItem"
-import IconButton from "@material-ui/core/IconButton"
-import Switch from "@material-ui/core/Switch"
-import Typography from "@material-ui/core/Typography"
+import HelpIcon from '@mui/icons-material/Help'
+import ZoomInIcon from '@mui/icons-material/ZoomIn'
+import ZoomOutIcon from '@mui/icons-material/ZoomOut'
+import FormLabel from "@mui/material/FormLabel"
+import Tooltip from "@mui/material/Tooltip"
+import FormControl from "@mui/material/FormControl"
+import InputLabel from "@mui/material/InputLabel"
+import Select from "@mui/material/Select"
+import MenuItem from "@mui/material/MenuItem"
+import IconButton from "@mui/material/IconButton"
+import Switch from "@mui/material/Switch"
+import Typography from "@mui/material/Typography"
 import { addHotkey } from "../../../Common/hooks"
 
 const useStyles = makeStyles(theme => ({

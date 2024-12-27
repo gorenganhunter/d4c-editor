@@ -1,14 +1,14 @@
 import React from "react"
-import Grid from "@material-ui/core/Grid"
-import AttachFileIcon from '@material-ui/icons/AttachFile'
-import QueueMusicIcon from '@material-ui/icons/QueueMusic'
+import Grid from "@mui/material/Grid"
+import AttachFileIcon from '@mui/icons-material/AttachFile'
+import QueueMusicIcon from '@mui/icons-material/QueueMusic'
 import FileField from "../../../Common/Components/FileField"
 import { Music, Background } from "../../states"
 import { userMessage } from "../../../Common/Components/GlobalSnackbar"
 import { useTranslation } from "react-i18next"
 import { useObserver } from "mobx-react-lite"
 import { scope } from "../../../MappingScope/scope"
-import TextField from "@material-ui/core/TextField"
+import TextField from "@mui/material/TextField"
 import i18n from "../../../i18n"
 
 const FileFieldWrapper = ({ children }: { children: React.ReactNode }) => {

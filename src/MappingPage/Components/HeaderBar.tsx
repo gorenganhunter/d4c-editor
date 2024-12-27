@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react"
-import Box from "@material-ui/core/Box"
-import IconButton from "@material-ui/core/IconButton"
-import { makeStyles } from "@material-ui/core/styles"
-import Tab from "@material-ui/core/Tab"
-import Tabs from "@material-ui/core/Tabs"
-import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled'
-import RedoIcon from '@material-ui/icons/Redo'
-import SaveAltIcon from '@material-ui/icons/SaveAlt'
-import UndoIcon from '@material-ui/icons/Undo'
-import DoneOutlineIcon from '@material-ui/icons/DoneOutline'
+import Box from "@mui/material/Box"
+import IconButton from "@mui/material/IconButton"
+import { makeStyles } from "@mui/material/styles"
+import Tab from "@mui/material/Tab"
+import Tabs from "@mui/material/Tabs"
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled'
+import RedoIcon from '@mui/icons-material/Redo'
+import SaveAltIcon from '@mui/icons-material/SaveAlt'
+import UndoIcon from '@mui/icons-material/Undo'
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline'
 import { useHashRoutes, NavigateTo } from "../routes"
 import { scope } from "../../MappingScope/scope"
 import { addHotkey } from "../../Common/hooks"

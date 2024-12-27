@@ -1,10 +1,10 @@
 import React, { useEffect } from "react"
-import IconButton from "@material-ui/core/IconButton"
-import StopIcon from '@material-ui/icons/Stop'
-import PauseIcon from '@material-ui/icons/Pause'
-import PlayArrowIcon from '@material-ui/icons/PlayArrow'
-import Box from "@material-ui/core/Box"
-import Slider from "@material-ui/core/Slider"
+import IconButton from "@mui/material/IconButton"
+import StopIcon from '@mui/icons-material/Stop'
+import PauseIcon from '@mui/icons-material/Pause'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import Box from "@mui/material/Box"
+import Slider from "@mui/material/Slider"
 import { useTranslation } from "react-i18next"
 import { Music } from "../../states"
 import { useObserver } from "mobx-react-lite"

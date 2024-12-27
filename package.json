@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@mui/material": "^6.3.0",
+    "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.3.0",
+    "@mui/material": "^6.3.0",
     "axios": "^1.7.9",
     "bangbangboom-game": "git+https://gitee.com/ReiKohaku/bangbangboom-game",
     "clsx": "^2.1.1",
