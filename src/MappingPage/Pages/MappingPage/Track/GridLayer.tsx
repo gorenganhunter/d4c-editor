@@ -1,5 +1,5 @@
 import React from "react"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import { GridD1, MappingState, GridD2, GridD3, GridD4 } from "../sharedState"
 import { Music } from "../../../states"
 import { useObserver } from "mobx-react-lite"

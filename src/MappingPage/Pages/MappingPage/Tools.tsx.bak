@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { useObserver } from "mobx-react-lite"
 import { MappingState, ToolTypes } from "./sharedState"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import Box from "@mui/material/Box"
 import Grid from "@mui/material/Grid"
 import { useTranslation } from "react-i18next"

@@ -4,7 +4,7 @@ import { Music } from "../../../states"
 import { startAnimation, stopAnimation } from "../../../../Common/animation"
 import { state } from "./state"
 import { MappingState } from "../sharedState"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 
 const useStyles = makeStyles(theme => ({
   viewport: {

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import { autorun, observable } from "mobx"
 import { Music } from "../../../states"
 import { startAnimation, stopAnimation } from "../../../../Common/animation"

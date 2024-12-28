@@ -8,7 +8,7 @@ import DialogActions from "@mui/material/DialogActions"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import { useTranslation } from "react-i18next"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 
 const useStyles = makeStyles(theme => ({
   paper: { width: "calc(60vw + 200px)" }
@@ -45,7 +45,7 @@ const CopyDialog = () => {
     <Dialog open={dialog.open} onClose={() => dialog.open = false} classes={{ paper: cn.paper }}>
       <DialogTitle>{dialog.title}</DialogTitle>
       <DialogContent>
-        <TextField autoFocus onFocus={onfocus} fullWidth multiline rowsMax={20} variant="outlined" value={dialog.content} />
+        <TextField autoFocus onFocus={onfocus} fullWidth multiline maxRows={20} variant="outlined" value={dialog.content} />
       </DialogContent>
       <DialogActions>
         <Button onClick={copy} color="primary">

@@ -1,6 +1,6 @@
 import React from "react"
 import Box from "@mui/material/Box"
-import makeStyles from "@mui/material/styles/makeStyles"
+import makeStyles from "@mui/styles/makeStyles"
 import { Background } from "../states"
 import { useObserver } from "mobx-react-lite"
 import { scope } from "../../MappingScope/scope"

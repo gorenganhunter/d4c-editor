@@ -2,7 +2,11 @@ import React, { useEffect } from 'react'
 import MappingPage from './MappingPage'
 import { useGameState } from './GamePage/gamestate'
 import GamePage from './GamePage'
-
+import { Theme } from '@mui/material/styles';
+declare module '@mui/styles/defaultTheme' {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface (remove this line if you don't have the rule enabled)
+    interface DefaultTheme extends Theme {}
+}
 
 const App = () => {
 

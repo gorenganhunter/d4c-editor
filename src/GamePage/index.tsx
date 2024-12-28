@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import { Game } from "bangbangboom-game"
 import { Music, Background } from "../MappingPage/states"
 import { userMessage } from "../Common/Components/GlobalSnackbar"
@@ -46,7 +46,7 @@ const GamePage = () => {
       backgroundSrc: Background.src || process.env.PUBLIC_URL + '/assets/mapping/bg_normal.png',
       songName: scope.meta.name,
       skin: process.env.PUBLIC_URL + "/assets/skins/" + scope.settings.game.skin,
-      sound: process.env.PUBLIC_URL + "/assets/skins/" + scope.settings.game.skin,
+      // sound: process.env.PUBLIC_URL + "/assets/skins/" + scope.settings.game.skin,
       mapContent: () => toGameContent(scope.map as any)
     })
     game.ondestroyed = () => {

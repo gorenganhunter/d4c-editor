@@ -122,8 +122,8 @@ export class EditMap {
       slides: entryList(slides).map(x => ({ ...x[1] })),
       notes: entryList(notes).map(x => ({ ...x[1] }))
     }
-    forJson.timepoints.forEach(x => delete x.ticktimecache)
-    forJson.notes.forEach(x => delete x.realtimecache)
+    // forJson.timepoints.forEach(x => delete x.ticktimecache)
+    // forJson.notes.forEach(x => delete x.realtimecache)
     return JSON.stringify(forJson)
   }
 

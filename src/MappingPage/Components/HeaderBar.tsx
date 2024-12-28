@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import Box from "@mui/material/Box"
 import IconButton from "@mui/material/IconButton"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import Tab from "@mui/material/Tab"
 import Tabs from "@mui/material/Tabs"
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled'

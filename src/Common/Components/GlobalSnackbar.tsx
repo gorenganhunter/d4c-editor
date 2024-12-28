@@ -9,7 +9,7 @@ import IconButton from '@mui/material/IconButton'
 import Snackbar from '@mui/material/Snackbar'
 import SnackbarContent from '@mui/material/SnackbarContent'
 import WarningIcon from '@mui/icons-material/Warning'
-import { makeStyles } from '@mui/material/styles'
+import { makeStyles } from '@mui/styles'
 import { observable } from 'mobx'
 import { useObserver } from 'mobx-react-lite'
 

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react"
 import clsx from "clsx"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import { Music } from "../../states"
 import { createAnimLoop } from "../../../Common/hooks"
 import { TimeToString } from "../../../Common/utils"

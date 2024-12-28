@@ -75,9 +75,9 @@ const MeasureBtn = () => {
 
   const [length, setLen] = useState(0)
 
-  useEffect(() => addHotkey("t", () => [
+  useEffect(() => addHotkey("t", () => {[
     startMeasure(setLen)
-  ]), [])
+  ]}), [])
 
   const { t } = useTranslation()
 

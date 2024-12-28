@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { useObserver } from "mobx-react-lite"
 import { MappingState, ToolTypes } from "./sharedState"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import Box from "@mui/material/Box"
 import Grid from "@mui/material/Grid"
 import { useTranslation } from "react-i18next"
@@ -47,11 +47,11 @@ const SelectTool = () => {
   const cn = useStyles()
   const { t } = useTranslation()
 
-  useEffect(() => addHotkey("1", () => MappingState.tool = "none"), [])
-  useEffect(() => addHotkey("2", () => MappingState.tool = "single"), [])
-  useEffect(() => addHotkey("3", () => MappingState.tool = "slide"), [])
-  useEffect(() => addHotkey("4", () => MappingState.tool = "laser"), [])
-  useEffect(() => addHotkey("5", () => MappingState.tool = "delete"), [])
+  useEffect(() => addHotkey("1", () => {MappingState.tool = "none"}), [])
+  useEffect(() => addHotkey("2", () => {MappingState.tool = "single"}), [])
+  useEffect(() => addHotkey("3", () => {MappingState.tool = "slide"}), [])
+  useEffect(() => addHotkey("4", () => {MappingState.tool = "laser"}), [])
+  useEffect(() => addHotkey("5", () => {MappingState.tool = "delete"}), [])
 
   return useObserver(() =>
     <Grid item>

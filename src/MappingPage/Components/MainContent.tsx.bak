@@ -2,7 +2,7 @@ import React from "react"
 import Fade from "@mui/material/Fade"
 import Box from "@mui/material/Box"
 import { useHashRoutes } from "../routes"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 
 const useStyles = makeStyles(theme => ({
   content: { flexGrow: 1, position: "relative", overflow: "hidden", },

@@ -1,5 +1,5 @@
 import React from "react"
-import makeStyles from "@mui/material/styles/makeStyles"
+import makeStyles from "@mui/styles/makeStyles"
 import Grid from "@mui/material/Grid"
 import LeftPanel from "./LeftPanel"
 import RightPanel from "./RightPanel"

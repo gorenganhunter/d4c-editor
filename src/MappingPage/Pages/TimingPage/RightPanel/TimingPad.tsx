@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import assets from "../../../assets"
 import { once, range } from "../../../../Common/utils"
 import { createAnimLoop } from "../../../../Common/hooks"

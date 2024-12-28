@@ -1,5 +1,5 @@
 import React from "react"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import Box from "@mui/material/Box"
 import Tools from "./Tools"
 import Track from "./Track"

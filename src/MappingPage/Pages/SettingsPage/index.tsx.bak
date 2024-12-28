@@ -1,5 +1,5 @@
 import React from "react"
-import {makeStyles} from "@mui/material/styles"
+import {makeStyles} from "@mui/styles"
 import {useObserver} from "mobx-react-lite"
 import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react"
-import { makeStyles } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
 import { state } from "./state"
 import CanvasBar from "./CanvasBar"
 import ViewPort from "./ViewPort"

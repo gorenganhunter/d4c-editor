@@ -107,7 +107,7 @@ const upload = async () => {
         uploading = false;
         userMessage(i18n.t('Upload successfully', {id: uploadChartResult.id}), 'success')
         openDialog(i18n.t("Test in BanG Player"), i18n.t("Test Tips", {id: uploadChartResult.id}), `${uploadChartResult.id}`);
-    } catch (error) {
+    } catch (error: any) {
         if (onProcess) uploading = false;
         if (!error) return
         userMessage(i18n.t(error.message), "error")
@@ -147,7 +147,7 @@ const uploadToAyaSonolus = async () => {
         uploadingToAyaSonolus = false;
         userMessage(i18n.t('Upload successfully', {id: uploadChartResult.id}), 'success')
         openDialog(i18n.t("Test in Aya Sonolus Server"), i18n.t("Test Tips of Aya Sonolus Server", {id: uploadChartResult.id}), `${uploadChartResult.id}`);
-    } catch (error) {
+    } catch (error: any) {
         if (onProcess) uploadingToAyaSonolus = false;
         if (!error) return
         userMessage(i18n.t(error.message), "error")
