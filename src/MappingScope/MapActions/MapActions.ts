@@ -1,4 +1,4 @@
-import { NoteType, SingleNote, FlickNote, FreshNoteCache } from "../EditMap"
+import { NoteType, SingleNote, FlickNote, FreshNoteCache, TimeScale } from "../EditMap"
 import { SingleFlickActions } from "./AtomActions/SingleFlick"
 import { randomId, assert, neverHappen } from "../../Common/utils"
 import { SlideActions } from "./AtomActions/Slide"
@@ -6,6 +6,7 @@ import { SlideNoteActions } from "./AtomActions/SlideNote"
 import { TimepointActions } from "./AtomActions/Timepoint"
 import { MapActionsBase } from "./MapAtionsBase"
 import { action } from "mobx"
+import { TimescaleActions } from "./AtomActions/Timescale"
 
 
 export class MapActions extends MapActionsBase {
@@ -14,7 +15,7 @@ export class MapActions extends MapActionsBase {
   addTimepoint(time: number, bpm: number, bpb: number, justifydivision: number) {
     return this.done(this.history.doParallel(() => {
       if (this.history.callAtom(TimepointActions.Add, randomId(), time, bpm, bpb)) {
-        this.justifyFindNearest(this.notelist, justifydivision)
+        this.justifyFindNearest(this.notelist, this.timescalelist, justifydivision)
       }
     }))
   }
@@ -29,9 +30,9 @@ export class MapActions extends MapActionsBase {
       if (this.history.callAtom(TimepointActions.Set, timepoint, { time, bpm, bpb })) {
         if (timechanged)
           if (justifyFindNearest) {
-            this.justifyFindNearest(this.notelist, justifydivision)
+            this.justifyFindNearest(this.notelist, this.timescalelist, justifydivision)
           } else {
-            this.justifyFollowChanged(this.notelist, justifydivision)
+            this.justifyFollowChanged(this.notelist, this.timescalelist, justifydivision)
           }
       }
     }))
@@ -41,12 +42,13 @@ export class MapActions extends MapActionsBase {
   removeTimepoint(timepoint: number, justifydivision: number) {
     if (this.state.timepoints.size > 1) {
       return this.done(this.history.doParallel(() => {
-        this.justifyFindNearest(this.notelist, justifydivision, timepoint)
+        this.justifyFindNearest(this.notelist, this.timescalelist, justifydivision, timepoint)
         this.history.callAtom(TimepointActions.Remove, timepoint)
       }))
     } else {
       return this.done(this.history.doParallel(() => {
         this.deleteMany(this.notelist)
+        this.deleteManyTS(this.timescalelist)
         this.history.callAtom(TimepointActions.Remove, timepoint)
         if (this.state.slides.size ||
           this.state.notes.size ||
@@ -56,26 +58,41 @@ export class MapActions extends MapActionsBase {
   }
 
   @action.bound
-  addSingle(timepoint: number, offset: number, lane: number) {
+  addSingle(timepoint: number, offset: number, tsgroup: number, lane: number, alt: boolean) {
     return this.done(this.history.doTransaction(() =>
-      this.history.callAtom(SingleFlickActions.Add, randomId(), "single", timepoint, offset, lane)))
+      this.history.callAtom(SingleFlickActions.Add, randomId(), "single", timepoint, offset, tsgroup, lane, alt)))
+  }
+  
+  @action.bound
+  addFlick(timepoint: number, offset: number, tsgroup: number, lane: number) {
+    return this.done(this.history.doTransaction(() =>
+      this.history.callAtom(SingleFlickActions.Add, randomId(), "flick", timepoint, offset, tsgroup, lane, false)))
   }
 
+  // @action.bound
+  // toggleFlick(note: SingleNote | FlickNote) {
+  //   return this.done(this.history.doTransaction(() =>
+  //     this.history.callAtom(SingleFlickActions.Set, note.id, {
+  //       type: note.type === "single" ? "flick" : "single",
+  //       alt: false
+  //     })))
+  // }
+
   @action.bound
-  toggleFlick(note: SingleNote | FlickNote) {
+  toggleTap(note: SingleNote) {
     return this.done(this.history.doTransaction(() =>
       this.history.callAtom(SingleFlickActions.Set, note.id, {
-        type: note.type === "single" ? "flick" : "single"
+        alt: !note.alt,
       })))
   }
 
   @action.bound
-  addSlide(tp1: number, off1: number, lane1: number, tp2: number, off2: number, lane2: number, islaser?: boolean) {
+  addSlide(tp1: number, off1: number, tsg1: number, lane1: number, tp2: number, off2: number, tsg2: number, lane2: number, islaser?: boolean) {
     const sid = randomId()
     return this.done(this.history.doTransaction(() =>
       this.history.callAtom(SlideActions.Add, sid, false) &&
-      this.history.callAtom(SlideNoteActions.Add, randomId(), sid, tp1, off1, lane1, islaser) &&
-      this.history.callAtom(SlideNoteActions.Add, randomId(), sid, tp2, off2, lane2, islaser)))
+      this.history.callAtom(SlideNoteActions.Add, randomId(), sid, tp1, off1, tsg1, lane1, islaser) &&
+      this.history.callAtom(SlideNoteActions.Add, randomId(), sid, tp2, off2, tsg2, lane2, islaser)))
   }
 
   @action.bound
@@ -86,13 +103,19 @@ export class MapActions extends MapActionsBase {
   }
 
   @action.bound
-  addSlideMid(slide: number, timepoint: number, offset: number, lane: number, islaser?: boolean) {
+  addSlideMid(slide: number, timepoint: number, offset: number, tsgroup: number, lane: number, islaser?: boolean) {
     return this.done(this.history.doTransaction(() =>
-      this.history.callAtom(SlideNoteActions.Add, randomId(), slide, timepoint, offset, lane, islaser)))
+      this.history.callAtom(SlideNoteActions.Add, randomId(), slide, timepoint, offset, tsgroup, lane, islaser)))
   }
 
   @action.bound
-  moveMany(notes: NoteType[], timeoffset: number, min: number, max: number, laneoffset: number, division: number) {
+  addTimescale(tsgroup: number, timepoint: number, offset: number, timescale: number, disk: number) {
+    return this.done(this.history.doTransaction(() =>
+      this.history.callAtom(TimescaleActions.Add, randomId(), tsgroup, timescale, timepoint, offset, disk)))
+  }
+
+  @action.bound
+  moveMany(notes: NoteType[], timescales: TimeScale[], timeoffset: number, min: number, max: number, laneoffset: number, division: number) {
     return this.done(this.history.doTransaction(() => {
       for (const n of notes) {
         const targetTime = n.realtimecache + timeoffset
@@ -104,7 +127,15 @@ export class MapActions extends MapActionsBase {
         this.patchNote(n, { lane: targetLane })
         n.realtimecache = targetTime
       }
-      this.justifyFindNearest(notes, division)
+      for (const n of timescales) {
+        const targetTime = n.realtimecache + timeoffset
+        if (targetTime > max || targetTime < min) {
+          for (const n of notes) FreshNoteCache(this.state, n)
+          return false
+        }
+        n.realtimecache = targetTime
+      }
+      this.justifyFindNearest(notes, timescales, division)
       return true
     }))
   }
@@ -138,10 +169,10 @@ export class MapActions extends MapActionsBase {
         if (n.type === "slide") {
           const slide = slideidmap[n.slide]
           if (!slide) continue
-          const done = this.history.callAtom(SlideNoteActions.Add, randomId(), slide, res.timepoint.id, res.offset, targetLane)
+          const done = this.history.callAtom(SlideNoteActions.Add, randomId(), slide, res.timepoint.id, res.offset, n.tsgroup, targetLane)
           if (!done) return false
         } else {
-          const done = this.history.callAtom(SingleFlickActions.Add, randomId(), n.type, res.timepoint.id, res.offset, targetLane)
+          const done = this.history.callAtom(SingleFlickActions.Add, randomId(), n.type, res.timepoint.id, res.offset, n.tsgroup, targetLane, n.alt)
           if (!done) return false
         }
       }
@@ -156,4 +187,10 @@ export class MapActions extends MapActionsBase {
     }))
   }
 
+  @action.bound
+  removeTimescales(timescales: TimeScale[]) {
+    return this.done(this.history.doParallel(() => {
+      this.deleteManyTS(timescales)
+    }))
+  }
 }

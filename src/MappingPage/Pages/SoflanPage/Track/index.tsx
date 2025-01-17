@@ -112,48 +112,15 @@ const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
   if (!beat || lane < 0) return
   switch (MappingState.tool) {
     case "single":
-      scope.map.addSingle(beat.timepoint.id, beat.offset, -1, lane, false)
+      scope.map.addSingle(beat.timepoint.id, beat.offset, lane == 0 || lane == 6 ? -2 : -1, lane, false)
       break
     case "flick":
-      scope.map.addFlick(beat.timepoint.id, beat.offset, -2, lane)
-      const i = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat.timepoint.id && offset == beat.offset && tsgroup == -1 && timescale == -1 && disk == (lane == 0 ? 2 : 1)))
-      if (i === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat.offset, -1, lane == 0 ? 1 : 2)
-      else {
-        const tsc = scope.map.timescalelist[i]
-        tsc.disk = 3
-        scope.map.timescalelist[i] = tsc
-      }
-      
-      const ii = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat.timepoint.id && offset == beat.offset + 6 && tsgroup == -1 && timescale == 1 && disk == (lane == 0 ? 2 : 1)))
-      if (ii === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat.offset + 6, 1, lane == 0 ? 1 : 2)
-      else {
-        const tsc = scope.map.timescalelist[ii]
-        tsc.disk = 3
-        scope.map.timescalelist[ii] = tsc
-      }
+      scope.map.addFlick(beat.timepoint.id, beat.offset, lane == 0 || lane == 6 ? -2 : -1, lane)
       break
     case "slide":
       if (state.slideNote1Beat) {
         scope.map.addSlide(state.slideNote1Beat.timepoint.id, state.slideNote1Beat.offset, lane == 0 || lane == 6 ? -2 : -1, state.slideNote1Lane,
           beat.timepoint.id, beat.offset, lane == 0 || lane == 6 ? -2 : -1, lane)
-
-        if (state.slideNote1Lane == 0 || state.slideNote1Lane == 6) {
-          const i = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == state.slideNote1Beat?.timepoint.id && offset == state.slideNote1Beat?.offset && tsgroup == -1 && timescale == 0 && disk == (lane == 0 ? 2 : 1)))
-          if (i === -1) scope.map.addTimescale(-1, state.slideNote1Beat.timepoint.id, state.slideNote1Beat.offset, 0, lane == 0 ? 1 : 2)
-          else {
-            const tsc = scope.map.timescalelist[i]
-            tsc.disk = 3
-            scope.map.timescalelist[i] = tsc
-          }
-          
-          const ii = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat.timepoint.id && offset == beat.offset && tsgroup == -1 && timescale == 1 && disk == (lane == 0 ? 2 : 1)))
-          if (ii === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat.offset, 1, lane == 0 ? 1 : 2)
-          else {
-            const tsc = scope.map.timescalelist[ii]
-            tsc.disk = 3
-            scope.map.timescalelist[ii] = tsc
-          }
-        }
         state.slideNote1Beat = undefined
       } else {
         state.slideNote1Beat = beat
@@ -163,7 +130,7 @@ const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
     case "laser":
       if (state.slideNote1Beat) {
         scope.map.addSlide(state.slideNote1Beat.timepoint.id, state.slideNote1Beat.offset, lane == 0 || lane == 6 ? -2 : -1, state.slideNote1Lane,
-          beat.timepoint.id, beat.offset, -1, lane, true)
+          beat.timepoint.id, beat.offset, lane == 0 || lane == 6 ? -2 : -1, lane, true)
         state.slideNote1Beat = undefined
       } else {
         state.slideNote1Beat = beat

@@ -4,10 +4,10 @@ import { makeAction } from "./types"
 import { observable } from "mobx"
 
 
-const add = (map: EditMap, id: number, slide: number, timepoint: number, offset: number, lane: number, islaser?: boolean) => {
+const add = (map: EditMap, id: number, slide: number, timepoint: number, offset: number, tsgroup: number, lane: number, islaser?: boolean) => {
   const note: SlideNote = observable({
     type: "slide",
-    id, slide, timepoint, offset, lane,
+    id, slide, timepoint, offset, tsgroup, lane,
     realtimecache: 0,
     islaser: islaser
   })
@@ -35,7 +35,7 @@ const del = (map: EditMap, id: number) => {
   return note
 }
 
-type PatchType = Partial<Pick<SlideNote, "timepoint" | "offset" | "lane">>
+type PatchType = Partial<Pick<SlideNote, "timepoint" | "offset" | "tsgroup" | "lane">>
 
 const setv = (map: EditMap, id: number, patch: PatchType) => {
   const note = assert(map.notes.get(id))
@@ -53,15 +53,15 @@ const setv = (map: EditMap, id: number, patch: PatchType) => {
 }
 
 export const SlideNoteActions = {
-  Add: makeAction((map: EditMap, id: number, slide: number, timepoint: number, offset: number, lane: number, islaser?: boolean) => {
-    const res = add(map, id, slide, timepoint, offset, lane, islaser)
+  Add: makeAction((map: EditMap, id: number, slide: number, timepoint: number, offset: number, tsgroup: number, lane: number, islaser?: boolean) => {
+    const res = add(map, id, slide, timepoint, offset, tsgroup, lane, islaser)
     if (res)
       return (map: EditMap) => del(map, res.id)
   }),
   Remove: makeAction((map: EditMap, id: number) => {
     const res = del(map, id)
     if (res)
-      return (map: EditMap) => add(map, res.id, res.slide, res.timepoint, res.offset, res.lane)
+      return (map: EditMap) => add(map, res.id, res.slide, res.timepoint, res.offset, res.tsgroup, res.lane)
   }),
   Set: makeAction((map: EditMap, id: number, patch: PatchType) => {
     const res = setv(map, id, patch)

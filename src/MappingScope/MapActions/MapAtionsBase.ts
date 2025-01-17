@@ -1,10 +1,11 @@
 import { CommonActions } from "./CommonActions"
-import { EditMap, NoteType, Slide, Timepoint, FreshNoteCache, SlideNote } from "../EditMap"
+import { EditMap, NoteType, Slide, Timepoint, FreshNoteCache, SlideNote, TimeScaleGroup, TimeScale, FreshTimescaleCache } from "../EditMap"
 import { SingleFlickActions } from "./AtomActions/SingleFlick"
 import { assert, entryList } from "../../Common/utils"
 import { SlideNoteActions } from "./AtomActions/SlideNote"
 import { SlideActions } from "./AtomActions/Slide"
 import { computed } from "mobx"
+import { TimescaleActions } from "./AtomActions/Timescale"
 
 
 export class MapActionsBase extends CommonActions<EditMap> {
@@ -19,10 +20,18 @@ export class MapActionsBase extends CommonActions<EditMap> {
   @computed get notelist() {
     return entryList(this.state.notes).map(x => x[1])
   }
+  @computed get tsgrouplist() {
+    return entryList(this.state.tsgroups).map(x => x[1])
+  }
+  @computed get timescalelist() {
+    return entryList(this.state.timescales).map(x => x[1])
+  }
 
   get timepoints() { return this.state.timepoints as ReadonlyMap<number, Timepoint> }
   get slides() { return this.state.slides as ReadonlyMap<number, Slide> }
   get notes() { return this.state.notes as ReadonlyMap<number, NoteType> }
+  get tsgroups() { return this.state.tsgroups as ReadonlyMap<number, TimeScaleGroup> }
+  get timescales() { return this.state.timescales as ReadonlyMap<number, TimeScale> }
 
   findTimepoint(time: number, ignore?: number): [Timepoint | undefined, number] {
     const tps = this.timepointlist.filter(x => x.id !== ignore)
@@ -65,13 +74,17 @@ export class MapActionsBase extends CommonActions<EditMap> {
     return this.history.callAtom(SingleFlickActions.Set, note.id, patch)
   }
 
+  protected patchTimescale(timescale: TimeScale, patch: { timepoint?: number, offset?: number }) {
+    return this.history.callAtom(TimescaleActions.Set, timescale.id, patch)
+  }
+
   /**
    * try to keep the note's timepoint and offset  
    * refresh note cache first  
    * if the note still in its timepoint, no change  
    * else find the proper position for it by division  
    */
-  protected justifyFollowChanged(notes: NoteType[], division: number, ignore?: number) {
+  protected justifyFollowChanged(notes: NoteType[], timescales: TimeScale[], division: number, ignore?: number) {
     for (const n of notes) {
       FreshNoteCache(this.state, n)
       const res = this.calcNearestPosition(n.realtimecache, division, ignore)
@@ -81,6 +94,15 @@ export class MapActionsBase extends CommonActions<EditMap> {
         this.patchNote(n, { timepoint: res.timepoint.id, offset: res.offset })
       }
     }
+    for (const n of timescales) {
+      FreshTimescaleCache(this.state, n)
+      const res = this.calcNearestPosition(n.realtimecache, division, ignore)
+      if (!res) {
+        this.deleteOneTS(n)
+      } else if (res.timepoint.id !== n.timepoint || res.offset !== n.offset) {
+        this.patchTimescale(n, { timepoint: res.timepoint.id, offset: res.offset })
+      }
+    }
   }
 
   /**
@@ -88,13 +110,21 @@ export class MapActionsBase extends CommonActions<EditMap> {
    * if note still in unchanged timepoint, no change  
    * else find the proper position for it by division  
    */
-  protected justifyFindNearest(notes: NoteType[], division: number, ignore?: number) {
+  protected justifyFindNearest(notes: NoteType[], timescales: TimeScale[], division: number, ignore?: number) {
     for (const n of notes) {
       const res = this.calcNearestPosition(n.realtimecache, division, ignore)
       if (!res) {
         this.deleteOne(n)
       } else if (res.timepoint.id !== n.timepoint || res.offset !== n.offset) {
         this.patchNote(n, { timepoint: res.timepoint.id, offset: res.offset })
+      }
+    }
+    for (const n of timescales) {
+      const res = this.calcNearestPosition(n.realtimecache, division, ignore)
+      if (!res) {
+        this.deleteOneTS(n)
+      } else if (res.timepoint.id !== n.timepoint || res.offset !== n.offset) {
+        this.patchTimescale(n, { timepoint: res.timepoint.id, offset: res.offset })
       }
     }
   }
@@ -125,6 +155,17 @@ export class MapActionsBase extends CommonActions<EditMap> {
   protected deleteMany(notes: NoteType[]) {
     for (const n of notes) {
       this.deleteOne(n)
+    }
+  }
+
+  protected deleteOneTS(timescale: TimeScale) {
+    if (!this.timescales.has(timescale.id)) return false
+    return this.history.callAtom(TimescaleActions.Remove, timescale.id)
+  }
+
+  protected deleteManyTS(timescales: TimeScale[]) {
+    for (const n of timescales) {
+      this.deleteOneTS(n)
     }
   }
 }

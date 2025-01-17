@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useObserver } from "mobx-react-lite"
 import { MappingState, ToolTypes } from "./sharedState"
 import { makeStyles } from "@material-ui/core/styles"
@@ -10,6 +10,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel"
 import Radio from "@material-ui/core/Radio"
 import assets from "../../assets"
 import HelpIcon from '@material-ui/icons/Help'
+import AddIcon from '@material-ui/icons/Add'
+import DeleteIcon from '@material-ui/icons/Delete'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 import FormLabel from "@material-ui/core/FormLabel"
@@ -22,6 +24,9 @@ import IconButton from "@material-ui/core/IconButton"
 import Switch from "@material-ui/core/Switch"
 import Typography from "@material-ui/core/Typography"
 import { addHotkey } from "../../../Common/hooks"
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@material-ui/core"
+import { state } from "../MappingPage/Track/state"
+import { scope } from "../../../MappingScope/scope"
 
 const useStyles = makeStyles(theme => ({
   tools: {
@@ -29,7 +34,8 @@ const useStyles = makeStyles(theme => ({
     "-webkit-overflow-scrolling": "touch",
     "&>*": { maxWidth: 300, position: "absolute", right: 0, top: 30 }
   },
-  toolimg: { width: 80 }
+  toolimg: { width: 80 },
+  paper: { width: "calc(60vw + 200px)" }
 }))
 
 export const zoomin = () => {
@@ -43,55 +49,51 @@ export const zoomout = () => {
   MappingState.timeHeightFactor = f
 }
 
-const SelectTool = () => {
-  const cn = useStyles()
-  const { t } = useTranslation()
+// const SelectTool = () => {
+//   const cn = useStyles()
+//   const { t } = useTranslation()
 
-  useEffect(() => addHotkey("1", () => MappingState.tool = "none"), [])
-  useEffect(() => addHotkey("2", () => MappingState.tool = "single"), [])
-  useEffect(() => addHotkey("3", () => MappingState.tool = "flick"), [])
-  useEffect(() => addHotkey("4", () => MappingState.tool = "slide"), [])
-  useEffect(() => addHotkey("5", () => MappingState.tool = "laser"), [])
-  useEffect(() => addHotkey("6", () => MappingState.tool = "delete"), [])
+//   useEffect(() => addHotkey("1", () => MappingState.tool = "none"), [])
+//   useEffect(() => addHotkey("2", () => MappingState.tool = "single"), [])
+//   useEffect(() => addHotkey("3", () => MappingState.tool = "slide"), [])
+//   useEffect(() => addHotkey("4", () => MappingState.tool = "laser"), [])
+//   useEffect(() => addHotkey("5", () => MappingState.tool = "delete"), [])
 
-  return useObserver(() =>
-    <Grid item>
-      <Box display="block" my={2} component={FormLabel}>
-        <Grid container alignItems="center" spacing={2}>
-          <Grid item>{t("Tool")}</Grid>
-          <Grid item>
-            <Tooltip placement="right"
-              title={<Typography variant="body2">
-                {t("Double click to switch flick")} <br />
-                {t("Right click to delete note(s)")} <br />
-                {t("Click the slide bar to add mid note")} <br />
-                {t("Hold ctrl and drag to multi-select & copy notes")}
-              </Typography>}>
-              <HelpIcon fontSize="small" />
-            </Tooltip></Grid>
-        </Grid>
-      </Box>
-      <RadioGroup value={MappingState.tool}
-        onChange={(e, v) => MappingState.tool = v as ToolTypes}>
-        <FormControlLabel value="none" control={<Radio />}
-          label={t("None")} title={t("Hotkey: {{ hotkey }}", { hotkey: "1" })} />
-        <FormControlLabel value="single" control={<Radio />}
-          label={t("Tap1/Tap2")}
-          title={t("Hotkey: {{ hotkey }}", { hotkey: "2" })} />
-        <FormControlLabel value="flick" control={<Radio />}
-          label={t("Scratch/Single Slide")}
-          title={t("Hotkey: {{ hotkey }}", { hotkey: "3" })} />
-        <FormControlLabel value="slide" control={<Radio />}
-          label={t("Hold/Stop")}
-          title={t("Hotkey: {{ hotkey }}", { hotkey: "4" })} />
-        <FormControlLabel value="laser" control={<Radio />}
-          label={t("Slide")}
-          title={t("Hotkey: {{ hotkey }}", { hotkey: "5" })} />
-        <FormControlLabel value="delete" control={<Radio />}
-          label={t("Delete")} title={t("Hotkey: {{ hotkey }}", { hotkey: "6 / Right click" })} />
-      </RadioGroup>
-    </Grid>)
-}
+//   return useObserver(() =>
+//     <Grid item>
+//       <Box display="block" my={2} component={FormLabel}>
+//         <Grid container alignItems="center" spacing={2}>
+//           <Grid item>{t("Tool")}</Grid>
+//           <Grid item>
+//             <Tooltip placement="right"
+//               title={<Typography variant="body2">
+//                 {t("Double click to switch flick")} <br />
+//                 {t("Right click to delete note(s)")} <br />
+//                 {t("Click the slide bar to add mid note")} <br />
+//                 {t("Hold ctrl and drag to multi-select & copy notes")}
+//               </Typography>}>
+//               <HelpIcon fontSize="small" />
+//             </Tooltip></Grid>
+//         </Grid>
+//       </Box>
+//       <RadioGroup value={MappingState.tool}
+//         onChange={(e, v) => MappingState.tool = v as ToolTypes}>
+//         <FormControlLabel value="none" control={<Radio />}
+//           label={t("None")} title={t("Hotkey: {{ hotkey }}", { hotkey: "1" })} />
+//         <FormControlLabel value="single" control={<Radio />}
+//           label={t("Tap/Scratch/Single Slide")}
+//           title={t("Hotkey: {{ hotkey }}", { hotkey: "2" })} />
+//         <FormControlLabel value="slide" control={<Radio />}
+//           label={t("Hold/Stop")}
+//           title={t("Hotkey: {{ hotkey }}", { hotkey: "3" })} />
+//         <FormControlLabel value="laser" control={<Radio />}
+//           label={t("Slide")}
+//           title={t("Hotkey: {{ hotkey }}", { hotkey: "4" })} />
+//         <FormControlLabel value="delete" control={<Radio />}
+//           label={t("Delete")} title={t("Hotkey: {{ hotkey }}", { hotkey: "5 / Right click" })} />
+//       </RadioGroup>
+//     </Grid>)
+// }
 
 const SelectDivisor = () => {
   const { t } = useTranslation()
@@ -172,12 +174,52 @@ const OtherTools = () => {
     </Grid>)
 }
 
+const addTimescale = () => {
+
+}
+
+const TimeScaleGroupTool = () => {
+  const cn = useStyles()
+  const { t } = useTranslation()
+  const [showDialog, setShowDialog] = useState<boolean>(false)
+
+  return useObserver(() =>
+    <Grid item container spacing={2}>
+      <Dialog open={showDialog} onClose={() => setShowDialog(false)} classes={{ paper: cn.paper }}>
+        <DialogTitle>Add TimeScale Group</DialogTitle>
+        <DialogContent>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDialog(false)} color="secondary">
+            {t("Close")}
+          </Button>
+          <Button onClick={() => {}} color="primary">
+            {t("Create")}
+          </Button>
+        </DialogActions>
+      </Dialog >
+      <FormControl fullWidth>
+        <InputLabel>Select Group</InputLabel>
+        <Select fullWidth value={MappingState.division}
+          onChange={e => MappingState.division = e.target.value as number} >
+          <MenuItem value={-1}>None</MenuItem>
+          {
+            scope.map.tsgroups.forEach((tsg, key) => (
+              <MenuItem value={key}>{tsg.name}</MenuItem>
+            ))
+          }
+          <MenuItem>None</MenuItem>
+        </Select>
+      </FormControl>
+    </Grid>)
+}
+
 const Tools = () => {
   const cn = useStyles()
   return (
     <Box className={cn.tools}>
       <Grid container spacing={4} direction="column">
-        <SelectTool />
+        <TimeScaleGroupTool />
         <SelectDivisor />
         <ZoomInOut />
         <OtherTools />

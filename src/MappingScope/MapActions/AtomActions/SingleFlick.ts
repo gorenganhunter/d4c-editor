@@ -5,9 +5,9 @@ import { observable } from "mobx"
 
 type SingleOrFlick = (SingleNote | FlickNote)
 
-const add = (map: EditMap, id: number, type: SingleOrFlick["type"], timepoint: number, offset: number, lane: number) => {
+const add = (map: EditMap, id: number, type: SingleOrFlick["type"], timepoint: number, offset: number, tsgroup: number, lane: number, alt: boolean) => {
   const note =
-    observable({ type: type as "single", id, timepoint, offset, lane, realtimecache: 0 }) as SingleOrFlick
+    observable({ type: type as "single" | "", id, timepoint, offset, lane, realtimecache: 0, alt, tsgroup }) as SingleOrFlick
 
   map.notes.set(note.id, note)
 
@@ -24,7 +24,7 @@ const del = (map: EditMap, id: number) => {
   return note
 }
 
-type PatchType = Partial<Pick<SingleOrFlick, "type" | "timepoint" | "offset" | "lane">>
+type PatchType = Partial<Pick<SingleOrFlick, "type" | "timepoint" | "offset" | "lane" | "tsgroup" | "alt">>
 
 const setv = (map: EditMap, id: number, patch: PatchType) => {
   const note = assert(map.notes.get(id))
@@ -38,15 +38,15 @@ const setv = (map: EditMap, id: number, patch: PatchType) => {
 }
 
 export const SingleFlickActions = {
-  Add: makeAction((map: EditMap, id: number, type: SingleOrFlick["type"], timepoint: number, offset: number, lane: number) => {
-    const res = add(map, id, type, timepoint, offset, lane)
+  Add: makeAction((map: EditMap, id: number, type: SingleOrFlick["type"], timepoint: number, offset: number, tsgroup: number, lane: number, alt: boolean) => {
+    const res = add(map, id, type, timepoint, offset, tsgroup, lane, alt)
     if (res)
       return (map: EditMap) => del(map, res.id)
   }),
   Remove: makeAction((map: EditMap, id: number) => {
     const res = del(map, id)
     if (res)
-      return (map: EditMap) => add(map, res.id, res.type as SingleOrFlick["type"], res.timepoint, res.offset, res.lane)
+      return (map: EditMap) => add(map, res.id, res.type as SingleOrFlick["type"], res.timepoint, res.offset, res.tsgroup, res.lane, res.alt)
   }),
   Set: makeAction((map: EditMap, id: number, patch: PatchType) => {
     const res = setv(map, id, patch)
