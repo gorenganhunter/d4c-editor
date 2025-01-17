@@ -101,7 +101,7 @@ export function toD4CFormat(map: EditMap): D4CExport {
         }
     })
 
-    const ben = (len - ts[ts.length - 1].time) / ts[ts.length - 1].bpm + ts[ts.length - 1].fb
+    const ben = (len - ts[ts.length - 1].time) * 60 / ts[ts.length - 1].bpm + ts[ts.length - 1].fb
 
     ts.forEach((tp) => {
         chartData.BpmDataList.push({
