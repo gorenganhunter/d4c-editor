@@ -87,7 +87,7 @@ export function toD4CFormat(map: EditMap): D4CExport {
 
     chartData.Offset = tps[0].time
 
-    const ts = tps.map((tp: Timepoint, i, arr) => {
+    const ts = tps.sort((a, b) => a.time - b.time).map((tp: Timepoint, i, arr) => {
         let fb = 0
         if (i > 0) {
             for (let j = 0; j < i; j++) {
