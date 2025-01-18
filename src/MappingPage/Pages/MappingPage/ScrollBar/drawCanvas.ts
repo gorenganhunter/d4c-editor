@@ -107,7 +107,7 @@ export const drawScrollBar = (canvas: HTMLCanvasElement) => {
   for (const n of scope.map.notelist) {
     switch (n.type) {
       case "single":
-        ctx.fillStyle = n.alt ? "rgba(21,224,225)" : "rgba(0,90,255)"
+        ctx.fillStyle = n.alt ? "rgba(0,90,255)" : "rgba(21,224,225)"
         drawSquare(ctx, getX(n.lane), getY(n.realtimecache))
         break
       case "flick":

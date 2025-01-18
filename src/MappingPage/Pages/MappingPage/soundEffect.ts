@@ -32,7 +32,7 @@ let noSoundUntil = -1
 const soundlist = observable({
   get list() {
     return MappingState.noteListOrdered.map(x => {
-      if (x.type === "single") return { time: x.realtimecache, type: x.alt ? "tap_alt" : "tap" }
+      if (x.type === "single") return { time: x.realtimecache, type: x.alt ? "tap" : "tap_alt" }
       if (x.lane == 0 || x.lane == 6) return { time: x.realtimecache, type: "scratch" }
       // const slide = assert(scope.map.slides.get(x.slide))
       // if (x.id === slide.notes[slide.notes.length - 1] && slide.flickend)

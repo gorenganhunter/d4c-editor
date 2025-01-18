@@ -195,7 +195,7 @@ const Note = ({ note }: { note: NoteType }) => {
         }
         switch (note.type) {
             case "single":
-                src = note.alt ? assets.d4dj_tap_alt : assets.d4dj_tap;
+                src = note.alt ? assets.d4dj_tap : assets.d4dj_tap_alt;
                 break;
             case "flick":
                 src =

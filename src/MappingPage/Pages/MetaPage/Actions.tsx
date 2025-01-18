@@ -7,11 +7,11 @@ import {userMessage} from "../../../Common/Components/GlobalSnackbar"
 // import {toBestdoriFormat} from "../../../MapFormats/bestdori"
 import {scope} from "../../../MappingScope/scope"
 import {openConfirm} from "./ConfirmDialog"
-import {openFile, downLoadFile} from "../../../Common/utils"
+import {openFile, downLoadFile, randomId} from "../../../Common/utils"
 // import {fromBBBv1Format} from "../../../MapFormats/bbbv1"
 import {toD4DJGameFormat, D4DJExport} from "../../../MapFormats/d4dj"
 import {toD4CFormat} from "../../../MapFormats/d4c"
-import {EditMap} from "../../../MappingScope/EditMap"
+import {EditMap, NoteType, Slide, Timepoint} from "../../../MappingScope/EditMap"
 import i18n from "../../../i18n"
 import {Music} from "../../../MappingPage/states"
 
@@ -38,17 +38,17 @@ import {Music} from "../../../MappingPage/states"
 //     }
 // }
 
-const exportD4DJ = () => {
-    try {
-        const content = toD4DJGameFormat((scope.map as any).state)
-        downLoadFile(content.chart, "chart_00000014.json")
-        openDialog(i18n.t("Please replace the corresponding item in ChartNoteCountMaster with this:"), content.noteCount)
-    } catch(error) {
-        openDialog(i18n.t("An error occurred during export"), i18n.t("" + error))
-        userMessage(i18n.t("Error export"), "error")
-        throw error
-    }
-}
+// const exportD4DJ = () => {
+//     try {
+//         const content = toD4DJGameFormat((scope.map as any).state)
+//         downLoadFile(content.chart, "chart_00000014.json")
+//         openDialog(i18n.t("Please replace the corresponding item in ChartNoteCountMaster with this:"), content.noteCount)
+//     } catch(error) {
+//         openDialog(i18n.t("An error occurred during export"), i18n.t("" + error))
+//         userMessage(i18n.t("Error export"), "error")
+//         throw error
+//     }
+// }
 
 const exportD4C = () => {
     try {
@@ -80,6 +80,74 @@ const importEditorMap = async () => {
     try {
         const content = await openFile("*")
         scope.reset(EditMap.fromJson(content))
+        userMessage(i18n.t("Import success"), "success")
+    } catch (error) {
+        if (!error) return
+        userMessage(i18n.t("Error import"), "error")
+        throw error
+    }
+}
+
+const importEditorMapOld = async () => {
+    try {
+        const content = await openFile("*")
+        let chart = JSON.parse(content)
+        chart.tsgroups = [{"id":-1,"name":"Default","timescales":[]},{"id":-2,"name":"Disk Note","timescales":[]}]
+        chart.timescales = []
+        chart.notes = chart.notes.map((n: any) => {
+            n.tsgroup = (n.lane == 0 || n.lane == 6) ? -2 : -1
+            return n
+        })
+        chart.notes.forEach((n: NoteType) => {
+            if (n.type == "flick" && (n.lane == 0 || n.lane == 6)) {
+                const i = chart.timescales.findIndex(({ timepoint, offset, tsgroup, timescale, disk }: any) => (timepoint == n.timepoint && offset == n.offset && tsgroup == -1 && timescale == -1 && disk == (n.lane == 0 ? 2 : 1)))
+                if (i === -1) chart.timescales.push({ id: randomId(), timepoint: n.timepoint, offset: n.offset, tsgroup: -1, timescale: -1, disk: n.lane == 0 ? 1 : 2 })
+                else {
+                    const ts = chart.timescales[i]
+                    ts.disk = 3
+                    chart.timescales[i] = ts
+                }
+                
+                const ii = chart.timescales.findIndex(({ timepoint, offset, tsgroup, timescale, disk }: any) => (timepoint == n.timepoint && offset == n.offset + 6 && tsgroup == -1 && timescale == 1 && disk == (n.lane == 0 ? 2 : 1)))
+                if (ii === -1) chart.timescales.push({ id: randomId(), timepoint: n.timepoint, offset: n.offset + 6, tsgroup: -1, timescale: 1, disk: n.lane == 0 ? 1 : 2 })
+                else {
+                    const ts = chart.timescales[ii]
+                    ts.disk = 3
+                    chart.timescales[ii] = ts
+                }
+            } else if (n.type === "slide" && (n.lane == 0 || n.lane == 6) && !n.islaser) {
+                const slide: Slide = chart.slides.find(({ id }: any) => id == n.slide)
+                const sn = slide.notes.sort((a, b) => {
+                    const note1: NoteType = chart.notes.find(({ id }: any) => id == a)
+                    const note2: NoteType = chart.notes.find(({ id }: any) => id == b)
+
+                    const t1: Timepoint = chart.timepoints.find(({ id }: any) => id == note1.timepoint)
+                    const t2: Timepoint = chart.timepoints.find(({ id }: any) => id == note2.timepoint)
+
+                    return (t1.time - t2.time) || (note1.offset - note2.offset)
+                })
+                if (sn[0] == n.id) {
+                    const i = chart.timescales.findIndex(({ timepoint, offset, tsgroup, timescale, disk }: any) => (timepoint == n.timepoint && offset == n.offset && tsgroup == -1 && timescale == 0 && disk == (n.lane == 0 ? 2 : 1)))
+                    if (i === -1) chart.timescales.push({ id: randomId(), timepoint: n.timepoint, offset: n.offset, tsgroup: -1, timescale: 0, disk: n.lane == 0 ? 1 : 2 })
+                    else {
+                        const ts = chart.timescales[i]
+                        ts.disk = 3
+                        chart.timescales[i] = ts
+                    }
+                } else if (sn[sn.length - 1] == n.id) {
+                    const i = chart.timescales.findIndex(({ timepoint, offset, tsgroup, timescale, disk }: any) => (timepoint == n.timepoint && offset == n.offset && tsgroup == -1 && timescale == 1 && disk == (n.lane == 0 ? 2 : 1)))
+                    if (i === -1) chart.timescales.push({ id: randomId(), timepoint: n.timepoint, offset: n.offset, tsgroup: -1, timescale: 1, disk: n.lane == 0 ? 1 : 2 })
+                    else {
+                        const ts = chart.timescales[i]
+                        ts.disk = 3
+                        chart.timescales[i] = ts
+                    }
+                }
+            }
+        })
+        chart.tsgroups[0].timescales = chart.timescales.map(({ id }: any) => id)
+
+        scope.reset(EditMap.fromJson(JSON.stringify(chart)))
         userMessage(i18n.t("Import success"), "success")
     } catch (error) {
         if (!error) return
@@ -182,6 +250,11 @@ const Actions = () => {
             <Grid item>
                 <Button fullWidth variant="outlined" onClick={importEditorMap}>
                     {t("Import editor format map (current map will loss)")}
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button fullWidth variant="outlined" onClick={importEditorMapOld}>
+                    {t("Import old editor format map (current map will loss)")}
                 </Button>
             </Grid>
             <Grid item>
