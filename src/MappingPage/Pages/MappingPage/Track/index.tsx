@@ -116,20 +116,23 @@ const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
       break
     case "flick":
       scope.map.addFlick(beat.timepoint.id, beat.offset, -2, lane)
-      const i = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat.timepoint.id && offset == beat.offset && tsgroup == -1 && timescale == -1 && disk == (lane == 0 ? 2 : 1)))
-      if (i === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat.offset, -1, lane == 0 ? 1 : 2)
-      else {
-        const tsc = scope.map.timescalelist[i]
-        tsc.disk = 3
-        scope.map.timescalelist[i] = tsc
-      }
-      
-      const ii = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat.timepoint.id && offset == beat.offset + 6 && tsgroup == -1 && timescale == 1 && disk == (lane == 0 ? 2 : 1)))
-      if (ii === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat.offset + 6, 1, lane == 0 ? 1 : 2)
-      else {
-        const tsc = scope.map.timescalelist[ii]
-        tsc.disk = 3
-        scope.map.timescalelist[ii] = tsc
+
+      if (lane == 0 || lane == 6) {
+          const i = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat.timepoint.id && offset == beat.offset && tsgroup == -1 && timescale == -1 && disk == (lane == 0 ? 2 : 1)))
+          if (i === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat.offset, -1, lane == 0 ? 1 : 2)
+          else {
+            const tsc = scope.map.timescalelist[i]
+            tsc.disk = 3
+            scope.map.timescalelist[i] = tsc
+          }
+          
+          const ii = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat.timepoint.id && offset == beat.offset + 6 && tsgroup == -1 && timescale == 1 && disk == (lane == 0 ? 2 : 1)))
+          if (ii === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat.offset + 6, 1, lane == 0 ? 1 : 2)
+          else {
+            const tsc = scope.map.timescalelist[ii]
+            tsc.disk = 3
+            scope.map.timescalelist[ii] = tsc
+          }
       }
       break
     case "slide":
