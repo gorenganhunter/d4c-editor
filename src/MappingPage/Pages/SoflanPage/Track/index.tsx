@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { autorun, action } from "mobx"
 import { startAnimation, stopAnimation } from "../../../../Common/animation"
 import { Music } from "../../../states"
@@ -14,6 +14,8 @@ import { scope } from "../../../../MappingScope/scope"
 import BarLayer from "./BarLayer"
 import WarningLayer from "./WarningLayer"
 import { binarySearch } from "../../../../Common/binarySearch"
+import { Dialog, DialogTitle, DialogActions, DialogContent, Button, TextField, FormGroup, Checkbox, FormControlLabel } from "@material-ui/core"
+import { useTranslation } from "react-i18next"
 
 const transY = (viewTime: number) => `translateY(${MappingState.timeHeightFactor * viewTime}px)`
 
@@ -102,45 +104,11 @@ const handleMove = action((e: MouseEvent | TouchEvent) => {
   }
 })
 
-const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
-  flushPointerPos(e.nativeEvent)
-  e.stopPropagation()
-  e.preventDefault()
-  if (state.preventClick) return
-  const beat = state.pointerBeat
-  const lane = state.pointerLane
-  if (!beat || lane < 0) return
-  switch (MappingState.tool) {
-    case "single":
-      scope.map.addSingle(beat.timepoint.id, beat.offset, lane == 0 || lane == 6 ? -2 : -1, lane, false)
-      break
-    case "flick":
-      scope.map.addFlick(beat.timepoint.id, beat.offset, lane == 0 || lane == 6 ? -2 : -1, lane)
-      break
-    case "slide":
-      if (state.slideNote1Beat) {
-        scope.map.addSlide(state.slideNote1Beat.timepoint.id, state.slideNote1Beat.offset, lane == 0 || lane == 6 ? -2 : -1, state.slideNote1Lane,
-          beat.timepoint.id, beat.offset, lane == 0 || lane == 6 ? -2 : -1, lane)
-        state.slideNote1Beat = undefined
-      } else {
-        state.slideNote1Beat = beat
-        state.slideNote1Lane = lane
-      }
-      break
-    case "laser":
-      if (state.slideNote1Beat) {
-        scope.map.addSlide(state.slideNote1Beat.timepoint.id, state.slideNote1Beat.offset, lane == 0 || lane == 6 ? -2 : -1, state.slideNote1Lane,
-          beat.timepoint.id, beat.offset, lane == 0 || lane == 6 ? -2 : -1, lane, true)
-        state.slideNote1Beat = undefined
-      } else {
-        state.slideNote1Beat = beat
-        state.slideNote1Lane = lane
-      }
-      break
-    default:
-      return
-  }
-})
+
+// const AddDialog = () => {
+//   return (
+//   )
+// }
 
 const Track = () => {
   const cn = useStyles()
@@ -166,6 +134,76 @@ const Track = () => {
     }
   }, [])
 
+  const [tsData, setTsData] = useState<{ ts?: number,timepoint: number, offset: number, timescale: number, disk: number }>({
+    timepoint: 0,
+    offset: 0,
+    disk: 3,
+    timescale: 1
+  })
+
+    const [disk, setDisk] = useState<{ left: boolean, right: boolean }>({
+        left: true,
+        right: true
+    })
+
+  const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
+    flushPointerPos(e.nativeEvent)
+    e.stopPropagation()
+    e.preventDefault()
+    if (state.preventClick) return
+    const beat = state.pointerBeat
+    const group = MappingState.group
+    if (!beat || group == -10) return
+    switch (MappingState.tool) {
+      case "add":
+        setTsData({
+          timepoint: beat.timepoint.id,
+          offset: beat.offset,
+          timescale: 1,
+          disk: 3
+        })
+                setDisk({ left: true, right: true })
+        setShowAddDialog(true)
+        break
+      case "edit":
+        const ts = scope.map.timescalelist.find(({ timepoint, offset, tsgroup }) => timepoint === beat.timepoint.id && offset === beat.offset && tsgroup === MappingState.group)
+        if (!ts) return
+        setTsData({
+          timepoint: ts.timepoint,
+          offset: ts.offset,
+          timescale: ts.timescale,
+          disk: ts.disk,
+          ts: ts.id
+        })
+                setDisk({ left: ts.disk === 3 || ts.disk === 1, right: ts.disk === 3 || ts.disk === 2 })
+        setShowEditDialog(true)
+        break
+      case "delete":
+        const tsc = scope.map.timescalelist.find(({ timepoint, offset, tsgroup }) => timepoint === beat.timepoint.id && offset === beat.offset && tsgroup === MappingState.group)
+        if (!tsc) return
+        scope.map.removeTimescales([tsc])
+        break
+      default:
+        return
+    }
+  })
+
+  const [showAddDialog, setShowAddDialog] = useState<boolean>(false)
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false)
+  const { t } = useTranslation()
+
+    const addTs = () => {
+        scope.map.addTimescale(MappingState.group, tsData.timepoint, tsData.offset, tsData.timescale, disk.left ? disk.right ? 3 : 1 : disk.right ? 2 : 0)
+        setShowAddDialog(false)
+    }
+
+    const editTs = () => {
+        if (!tsData.ts) return
+        const ts = scope.map.timescales.get(tsData.ts)
+        if (!ts) return
+        scope.map.editTimescale(ts, tsData.timescale, disk.left ? disk.right ? 3 : 1 : disk.right ? 2 : 0)
+        setShowEditDialog(false)
+    }
   return (
     <div className={cn.track}>
       <div className={cn.panel} ref={state.panelRef} onWheel={handleScroll} onClick={handleClick}>
@@ -177,6 +215,44 @@ const Track = () => {
       </div>
       {scope.settings.editor.show_info_window && <InfoWindow />}
       <ProgressLine />
+    <Dialog open={showAddDialog} onClose={() => setShowAddDialog(false)} classes={{ paper: cn.paper }}>
+      <DialogTitle>Add TimeScale</DialogTitle>
+      <DialogContent>
+          <TextField inputProps={{ type: "number" }} required autoFocus label="Timescale" value={tsData.timescale} onChange={e => setTsData({ ...tsData, timescale: parseInt(e.target.value) })} fullWidth />
+            <FormGroup>
+                        <h2>Select Disk</h2>
+                        <FormControlLabel control={(<Checkbox checked={disk.left} onChange={e => setDisk({ ...disk, left: e.target.checked })} />)} label="Left" />
+                        <FormControlLabel control={(<Checkbox checked={disk.right} onChange={e => setDisk({ ...disk, right: e.target.checked })} />)} label="Right" />
+            </FormGroup>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setShowAddDialog(false)} color="secondary">
+          {t("Close")}
+        </Button>
+        <Button onClick={addTs} color="primary">
+          {t("Create")}
+        </Button>
+      </DialogActions>
+    </Dialog >
+    <Dialog open={showEditDialog} onClose={() => setShowEditDialog(false)} classes={{ paper: cn.paper }}>
+      <DialogTitle>Edit TimeScale</DialogTitle>
+      <DialogContent>
+          <TextField inputProps={{ type: "number" }} required autoFocus label="Timescale" value={tsData.timescale} onChange={e => setTsData({ ...tsData, timescale: parseInt(e.target.value) })} fullWidth />
+            <FormGroup>
+                        <h2>Select Disk</h2>
+                        <FormControlLabel control={(<Checkbox checked={disk.left} onChange={e => setDisk({ ...disk, left: e.target.checked })} />)} label="Left" />
+                        <FormControlLabel control={(<Checkbox checked={disk.right} onChange={e => setDisk({ ...disk, right: e.target.checked })} />)} label="Right" />
+            </FormGroup>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setShowEditDialog(false)} color="secondary">
+          {t("Close")}
+        </Button>
+        <Button onClick={editTs} color="primary">
+          {t("Save")}
+        </Button>
+      </DialogActions>
+    </Dialog >
     </div>)
 }
 

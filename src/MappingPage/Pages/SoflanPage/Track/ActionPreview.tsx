@@ -23,10 +23,8 @@ const PointerPos = () => {
     if (!beat) return
     let color = "#afafaf"
     switch (MappingState.tool) {
-      case "single": color = "#0088ff"; break
-      case "flick": color = "#ff8822"; break
-      case "slide": color = "#00ff88"; break
-      case "laser": color = "#ff60a0"; break
+      case "add": color = "#0088ff"; break
+      case "edit": color = "#ff60a0"; break
       case "delete": color = "#ff4444"; break
     }
     return {

@@ -7,6 +7,7 @@ import { TimepointActions } from "./AtomActions/Timepoint"
 import { MapActionsBase } from "./MapAtionsBase"
 import { action } from "mobx"
 import { TimescaleActions } from "./AtomActions/Timescale"
+import { TsGroupActions } from "./AtomActions/TsGroup"
 
 
 export class MapActions extends MapActionsBase {
@@ -18,6 +19,29 @@ export class MapActions extends MapActionsBase {
         this.justifyFindNearest(this.notelist, this.timescalelist, justifydivision)
       }
     }))
+  }
+
+  @action.bound
+  addTsGroup(name: string) {
+    return this.done(this.history.doTransaction(() =>
+      this.history.callAtom(TsGroupActions.Add, randomId(), name)
+    ))
+  }
+
+  @action.bound
+  editTsGroup(id: number, name: string) {
+    if (!name || id < 0) return false
+    return this.done(this.history.doTransaction(() =>
+      this.history.callAtom(TsGroupActions.Set, id, { name })
+    ))
+  }
+  
+    @action.bound
+  removeTsGroup(id: number) {
+    if (id < 0) return false
+    return this.done(this.history.doTransaction(() =>
+      this.history.callAtom(TsGroupActions.Remove, id)
+    ))
   }
 
   @action.bound
@@ -83,6 +107,14 @@ export class MapActions extends MapActionsBase {
     return this.done(this.history.doTransaction(() =>
       this.history.callAtom(SingleFlickActions.Set, note.id, {
         alt: !note.alt,
+      })))
+  }
+  
+  @action.bound
+  editTimescale(ts: TimeScale, timescale: number, disk: number) {
+    return this.done(this.history.doTransaction(() =>
+      this.history.callAtom(TimescaleActions.Set, ts.id, {
+        timescale, disk
       })))
   }
 

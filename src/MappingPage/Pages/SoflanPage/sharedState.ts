@@ -4,7 +4,7 @@ import { scope } from "../../../MappingScope/scope"
 import { assert } from "../../../Common/utils"
 import { NoteType } from "../../../MappingScope/EditMap"
 
-export type ToolTypes = "none" | "single" | "flick" | "slide" | "delete" | "laser"
+export type ToolTypes = "none" | "add" | "edit" | "delete"
 
 const NoteSig = (n: NoteType) => `${n.timepoint}:${n.offset}:${n.lane}`
 
@@ -33,6 +33,7 @@ class State {
   @observable timeHeightFactor = 400
   @observable division = 4
   @observable tool = "none" as ToolTypes
+  @observable group = -1
 
   // we mirror 1. notes layer (and bar layer) 2. action preview layer 3. input event handler
   @observable mirror = false

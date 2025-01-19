@@ -68,12 +68,12 @@ export const drawScrollBar = (canvas: HTMLCanvasElement) => {
     drawLine(ctx, 15, 85, getY(t.time))
   }
 
-  ctx.fillStyle = "aquamarine"
-  ctx.strokeStyle = "aquamarine"
-  for (const t of scope.map.timepointlist) {
-    const y = getY(t.time)
+  ctx.fillStyle = "yellow"
+  ctx.strokeStyle = "yellow"
+  for (const t of scope.map.timescalelist.filter(({ tsgroup }) => tsgroup === MappingState.group)) {
+    const y = getY(t.realtimecache)
     drawLine(ctx, 0, 100, y)
-    ctx.fillText(t.bpm + "", 80, y - 3)
+    ctx.fillText(t.timescale + "x", 80, y - 3)
   }
 
   ctx.fillStyle = "white"
@@ -107,7 +107,7 @@ export const drawScrollBar = (canvas: HTMLCanvasElement) => {
   for (const n of scope.map.notelist) {
     switch (n.type) {
       case "single":
-        ctx.fillStyle = n.alt ? "rgba(21,224,225)" : "rgba(0,90,255)"
+        ctx.fillStyle = n.alt ? "rgba(0,90,255)" : "rgba(21,224,225)"
         drawSquare(ctx, getX(n.lane), getY(n.realtimecache))
         break
       case "flick":

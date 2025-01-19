@@ -19,7 +19,7 @@ import i18n from "../../i18n"
 import { useObserver } from "mobx-react-lite"
 
 const useStyles = makeStyles(theme => ({
-  tabs: { flexGrow: 1, height: "100%" }
+  tabs: { flexGrow: 1, height: "100%",  }
 }))
 
 const HeaderTabs = () => {
@@ -32,11 +32,12 @@ const HeaderTabs = () => {
     "#meta": t("Meta"),
     "#timing": t("Timing"),
     "#mapping": t("Mapping"),
+    "#soflan": t("Soflan"),
     "#settings": t("Settings")
   }
 
   return (
-    <Tabs indicatorColor="primary" className={cn.tabs} value={path in tabs ? path : "#meta"} onChange={(e, v) => NavigateTo(v)}>
+    <Tabs indicatorColor="primary" variant="scrollable" className={cn.tabs} value={path in tabs ? path : "#meta"} onChange={(e, v) => NavigateTo(v)}>
       {Object.keys(tabs).map(key =>
         <Tab key={key} value={key} label={tabs[key as keyof typeof tabs]} />)}
     </Tabs>)

@@ -33,6 +33,7 @@ class State {
   @observable timeHeightFactor = 400
   @observable division = 4
   @observable tool = "none" as ToolTypes
+  @observable group = -10
 
   // we mirror 1. notes layer (and bar layer) 2. action preview layer 3. input event handler
   @observable mirror = false

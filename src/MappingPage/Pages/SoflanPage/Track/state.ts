@@ -61,6 +61,8 @@ class State {
 
   @observable selectedNotes = new Set<number>()
 
+  @observable selectedSoflan: number = -10
+
   getSelectedNotes = () => {
     const selected = new Set<NoteType>()
     for (const nid of this.selectedNotes) {

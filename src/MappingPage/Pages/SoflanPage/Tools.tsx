@@ -24,7 +24,7 @@ import IconButton from "@material-ui/core/IconButton"
 import Switch from "@material-ui/core/Switch"
 import Typography from "@material-ui/core/Typography"
 import { addHotkey } from "../../../Common/hooks"
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@material-ui/core"
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText } from "@material-ui/core"
 import { state } from "../MappingPage/Track/state"
 import { scope } from "../../../MappingScope/scope"
 
@@ -49,51 +49,47 @@ export const zoomout = () => {
   MappingState.timeHeightFactor = f
 }
 
-// const SelectTool = () => {
-//   const cn = useStyles()
-//   const { t } = useTranslation()
+const SelectTool = () => {
+  const cn = useStyles()
+  const { t } = useTranslation()
 
-//   useEffect(() => addHotkey("1", () => MappingState.tool = "none"), [])
-//   useEffect(() => addHotkey("2", () => MappingState.tool = "single"), [])
-//   useEffect(() => addHotkey("3", () => MappingState.tool = "slide"), [])
-//   useEffect(() => addHotkey("4", () => MappingState.tool = "laser"), [])
-//   useEffect(() => addHotkey("5", () => MappingState.tool = "delete"), [])
+  useEffect(() => addHotkey("1", () => MappingState.tool = "none"), [])
+  useEffect(() => addHotkey("2", () => MappingState.tool = "add"), [])
+  useEffect(() => addHotkey("3", () => MappingState.tool = "edit"), [])
+  useEffect(() => addHotkey("4", () => MappingState.tool = "delete"), [])
 
-//   return useObserver(() =>
-//     <Grid item>
-//       <Box display="block" my={2} component={FormLabel}>
-//         <Grid container alignItems="center" spacing={2}>
-//           <Grid item>{t("Tool")}</Grid>
-//           <Grid item>
-//             <Tooltip placement="right"
-//               title={<Typography variant="body2">
-//                 {t("Double click to switch flick")} <br />
-//                 {t("Right click to delete note(s)")} <br />
-//                 {t("Click the slide bar to add mid note")} <br />
-//                 {t("Hold ctrl and drag to multi-select & copy notes")}
-//               </Typography>}>
-//               <HelpIcon fontSize="small" />
-//             </Tooltip></Grid>
-//         </Grid>
-//       </Box>
-//       <RadioGroup value={MappingState.tool}
-//         onChange={(e, v) => MappingState.tool = v as ToolTypes}>
-//         <FormControlLabel value="none" control={<Radio />}
-//           label={t("None")} title={t("Hotkey: {{ hotkey }}", { hotkey: "1" })} />
-//         <FormControlLabel value="single" control={<Radio />}
-//           label={t("Tap/Scratch/Single Slide")}
-//           title={t("Hotkey: {{ hotkey }}", { hotkey: "2" })} />
-//         <FormControlLabel value="slide" control={<Radio />}
-//           label={t("Hold/Stop")}
-//           title={t("Hotkey: {{ hotkey }}", { hotkey: "3" })} />
-//         <FormControlLabel value="laser" control={<Radio />}
-//           label={t("Slide")}
-//           title={t("Hotkey: {{ hotkey }}", { hotkey: "4" })} />
-//         <FormControlLabel value="delete" control={<Radio />}
-//           label={t("Delete")} title={t("Hotkey: {{ hotkey }}", { hotkey: "5 / Right click" })} />
-//       </RadioGroup>
-//     </Grid>)
-// }
+  return useObserver(() =>
+    <Grid item>
+      <Box display="block" my={2} component={FormLabel}>
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item>{t("Tool")}</Grid>
+          {/* <Grid item> */}
+          {/*   <Tooltip placement="right" */}
+          {/*     title={<Typography variant="body2"> */}
+          {/*       {t("Double click to switch flick")} <br /> */}
+          {/*       {t("Right click to delete note(s)")} <br /> */}
+          {/*       {t("Click the slide bar to add mid note")} <br /> */}
+          {/*       {t("Hold ctrl and drag to multi-select & copy notes")} */}
+          {/*     </Typography>}> */}
+          {/*     <HelpIcon fontSize="small" /> */}
+          {/*   </Tooltip></Grid> */}
+        </Grid>
+      </Box>
+      <RadioGroup value={MappingState.tool}
+        onChange={(e, v) => MappingState.tool = v as ToolTypes}>
+        <FormControlLabel value="none" control={<Radio />}
+          label={t("None")} title={t("Hotkey: {{ hotkey }}", { hotkey: "1" })} />
+        <FormControlLabel value="add" control={<Radio />}
+          label={t("Add")}
+          title={t("Hotkey: {{ hotkey }}", { hotkey: "2" })} />
+        <FormControlLabel value="edit" control={<Radio />}
+          label={t("Edit")}
+          title={t("Hotkey: {{ hotkey }}", { hotkey: "3" })} />
+        <FormControlLabel value="delete" control={<Radio />}
+          label={t("Delete")} title={t("Hotkey: {{ hotkey }}", { hotkey: "4 / Right click" })} />
+      </RadioGroup>
+    </Grid>)
+}
 
 const SelectDivisor = () => {
   const { t } = useTranslation()
@@ -174,43 +170,84 @@ const OtherTools = () => {
     </Grid>)
 }
 
-const addTimescale = () => {
-
-}
-
 const TimeScaleGroupTool = () => {
   const cn = useStyles()
   const { t } = useTranslation()
   const [showDialog, setShowDialog] = useState<boolean>(false)
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
+  const [tsgName, setTsgName] = useState<string>("")
 
   return useObserver(() =>
     <Grid item container spacing={2}>
-      <Dialog open={showDialog} onClose={() => setShowDialog(false)} classes={{ paper: cn.paper }}>
+      <Dialog disableEnforceFocus open={showDialog} onClose={() => setShowDialog(false)} classes={{ paper: cn.paper }}>
         <DialogTitle>Add TimeScale Group</DialogTitle>
         <DialogContent>
+          <TextField autoFocus label="Name" value={tsgName} onChange={e => setTsgName(e.target.value)} fullWidth />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowDialog(false)} color="secondary">
-            {t("Close")}
+            {t("Cancel")}
           </Button>
-          <Button onClick={() => {}} color="primary">
+          <Button onClick={() => scope.map.addTsGroup(tsgName)} color="primary">
             {t("Create")}
           </Button>
         </DialogActions>
       </Dialog >
+      <Dialog disableEnforceFocus open={showEditDialog} onClose={() => setShowEditDialog(false)} classes={{ paper: cn.paper }}>
+        <DialogTitle>Edit TimeScale Group</DialogTitle>
+        <DialogContent>
+          <TextField autoFocus label="Name" value={tsgName} onChange={e => setTsgName(e.target.value)} fullWidth />
+        </DialogContent>
+        <DialogActions>{(MappingState.group < 0) ? (<></>) :
+          (<><Button onClick={() => setShowEditDialog(false)} color="secondary">
+            {t("Cancel")}
+          </Button>
+          <Button onClick={() => scope.map.editTsGroup(MappingState.group, tsgName)} color="primary">
+            {t("Save")}
+          </Button></>)}
+        </DialogActions>
+      </Dialog >
+      <Dialog disableEnforceFocus open={showDeleteDialog} onClose={() => setShowDeleteDialog(false)} classes={{ paper: cn.paper }}>
+        <DialogContent>
+          <DialogContentText>{(MappingState.group < 0) ? "You can't delete default group." : (scope.map.notelist.find(({ tsgroup }) => tsgroup === MappingState.group) || scope.map.timescalelist.find(({ tsgroup }) => tsgroup === MappingState.group)) ? "You can only delete empty group." : "Are you sure want to delete this group?"}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDeleteDialog(false)} color="secondary">
+            {t("Cancel")}
+          </Button>
+          {(MappingState.group < 0 || (scope.map.notelist.find(({ tsgroup }) => tsgroup === MappingState.group) || scope.map.timescalelist.find(({ tsgroup }) => tsgroup === MappingState.group))) ? (<></>) : (<Button onClick={() => scope.map.removeTsGroup(MappingState.group)} color="primary">
+            {t("Delete")}
+          </Button>)}
+        </DialogActions>
+      </Dialog >
+      <Box display="block" my={2} component={FormLabel}>
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item>{t("Timescale Group")}</Grid>
+          <Grid item>
+            <Tooltip placement="right"
+              title={<Typography variant="body2">
+                {t("If you're using None, the center note will have Default group and disk note will have Disk Note group")}
+              </Typography>}>
+              <HelpIcon fontSize="small" />
+            </Tooltip></Grid>
+        </Grid>
+      </Box>
       <FormControl fullWidth>
         <InputLabel>Select Group</InputLabel>
-        <Select fullWidth value={MappingState.division}
-          onChange={e => MappingState.division = e.target.value as number} >
-          <MenuItem value={-1}>None</MenuItem>
+        <Select fullWidth value={MappingState.group}
+          onChange={e => MappingState.group = e.target.value as number} >
+          <MenuItem value={-10}>None</MenuItem>
           {
-            scope.map.tsgroups.forEach((tsg, key) => (
-              <MenuItem value={key}>{tsg.name}</MenuItem>
+            scope.map.tsgrouplist.map((tsg) => (
+              <MenuItem value={tsg.id}>{tsg.name}</MenuItem>
             ))
           }
-          <MenuItem>None</MenuItem>
         </Select>
-      </FormControl>
+        <Button onClick={() => {setShowDialog(true); setTsgName(`TsGroup ${scope.map.tsgrouplist.length - 2}`)}}>Add Group</Button>
+      </FormControl>{(MappingState.group < 0) ? (<></>) :
+      (<><Button variant="text" onClick={() => setShowEditDialog(true)}>Edit</Button>
+      <Button variant="text" color="secondary" onClick={() => setShowDeleteDialog(true)}>Delete</Button></>)}
     </Grid>)
 }
 
@@ -220,6 +257,7 @@ const Tools = () => {
     <Box className={cn.tools}>
       <Grid container spacing={4} direction="column">
         <TimeScaleGroupTool />
+        <SelectTool />
         <SelectDivisor />
         <ZoomInOut />
         <OtherTools />

@@ -117,85 +117,86 @@ const handleUp = action((e: MouseEvent | TouchEvent) => {
         setTimeout(() => state.preventClick--, 50);
     }
 });
-window.addEventListener("mouseup", handleUp);
-window.addEventListener("touchend", handleUp);
+// window.addEventListener("mouseup", handleUp);
+// window.addEventListener("touchend", handleUp);
 
-const removeNote = (note: NoteType) => {
-    if (state.selectedNotes.has(note.id)) {
-        scope.map.removeNotes(state.getSelectedNotes());
-    } else {
-        scope.map.removeNotes([note]);
-    }
-};
+// const removeNote = (note: NoteType) => {
+//     if (state.selectedNotes.has(note.id)) {
+//         scope.map.removeNotes(state.getSelectedNotes());
+//     } else {
+//         scope.map.removeNotes([note]);
+//     }
+// };
 
-const clickEventHandler = (nid: number) => {
-    return (e: React.MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-        // if (state.preventClick) return
-        const note = assert(scope.map.notes.get(nid));
-        if (e.ctrlKey) {
-            if (state.selectedNotes.has(note.id))
-                state.selectedNotes.delete(note.id);
-            else state.selectedNotes.add(note.id);
-        } else {
-            switch (MappingState.tool) {
-                case "delete":
-                    removeNote(note);
-                    break;
-            }
-        }
-    };
-};
+// const clickEventHandler = (nid: number) => {
+//     return (e: React.MouseEvent) => {
+//         e.stopPropagation();
+//         e.preventDefault();
+//         // if (state.preventClick) return
+//         const note = assert(scope.map.notes.get(nid));
+//         if (e.ctrlKey) {
+//             if (state.selectedNotes.has(note.id))
+//                 state.selectedNotes.delete(note.id);
+//             else state.selectedNotes.add(note.id);
+//         } else {
+//             switch (MappingState.tool) {
+//                 case "delete":
+//                     removeNote(note);
+//                     break;
+//             }
+//         }
+//     };
+// };
 
-const doubleClickHandler = (nid: number) => {
-    return (e: React.MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (state.preventClick) return;
-        const note = assert(scope.map.notes.get(nid));
-        if (note.type === "single") scope.map.toggleTap(note)
-        // if (note.type === "slide") {
-        //     const s = assert(scope.map.slides.get(note.slide));
-        //     if (note.id === s.notes[s.notes.length - 1])
-        //         scope.map.toggleFlickend(s.id);
-        // } else {
-        //     scope.map.toggleFlick(note);
-        // }
-    };
-};
+// const doubleClickHandler = (nid: number) => {
+//     return (e: React.MouseEvent) => {
+//         e.stopPropagation();
+//         e.preventDefault();
+//         if (state.preventClick) return;
+//         const note = assert(scope.map.notes.get(nid));
+//         if (note.type === "single") scope.map.toggleTap(note)
+//         // if (note.type === "slide") {
+//         //     const s = assert(scope.map.slides.get(note.slide));
+//         //     if (note.id === s.notes[s.notes.length - 1])
+//         //         scope.map.toggleFlickend(s.id);
+//         // } else {
+//         //     scope.map.toggleFlick(note);
+//         // }
+//     };
+// };
 
-const contextMenuHandler = (nid: number) => {
-    return (e: React.MouseEvent<HTMLImageElement>) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (state.preventClick) return;
-        const note = assert(scope.map.notes.get(nid));
-        removeNote(note);
-    };
-};
+// const contextMenuHandler = (nid: number) => {
+//     return (e: React.MouseEvent<HTMLImageElement>) => {
+//         e.stopPropagation();
+//         e.preventDefault();
+//         if (state.preventClick) return;
+//         const note = assert(scope.map.notes.get(nid));
+//         removeNote(note);
+//     };
+// };
 
 const Note = ({ note }: { note: NoteType }) => {
     const cn = useNoteStyles();
 
-    const onMouseDown = useMemo(() => downEventHandler(note.id), [note.id]);
-    const onContextMenu = useMemo(() => contextMenuHandler(note.id), [note.id]);
-    const onDoubleClick = useMemo(() => doubleClickHandler(note.id), [note.id]);
-    const onClick = useMemo(() => clickEventHandler(note.id), [note.id]);
+    // const onMouseDown = useMemo(() => downEventHandler(note.id), [note.id]);
+    // const onContextMenu = useMemo(() => contextMenuHandler(note.id), [note.id]);
+    // const onDoubleClick = useMemo(() => doubleClickHandler(note.id), [note.id]);
+    // const onClick = useMemo(() => clickEventHandler(note.id), [note.id]);
 
-    const props = useObserver(() => {
+    return useObserver(() => {
         const left = note.lane * 10 + 15 + "%";
         const bottom =
             MappingState.timeHeightFactor * note.realtimecache + "px";
+        const style = { left, bottom }
         let src: string;
         const n = scope.map.notes.get(note.id);
         if (!n) {
             // something strange with mobx action
-            return {};
+            return (<img alt="" />);
         }
         switch (note.type) {
             case "single":
-                src = note.alt ? assets.d4dj_tap_alt : assets.d4dj_tap;
+                src = note.alt ? assets.d4dj_tap : assets.d4dj_tap_alt;
                 break;
             case "flick":
                 src =
@@ -224,19 +225,21 @@ const Note = ({ note }: { note: NoteType }) => {
             default:
                 neverHappen();
         }
-        return {
-            style: { left, bottom },
+        const imgProps: any = {
             src,
             draggable: false,
             className: cn.note,
-            onMouseDown,
-            onContextMenu,
-            onDoubleClick,
-            onClick,
         };
-    });
 
-    return <img alt="" {...props} />;
+        if (MappingState.group === -10 || MappingState.group === n.tsgroup) {
+            imgProps.style = style
+            return (<img alt="" {...imgProps} />)
+        }
+        
+        imgProps.style = { ...style, zIndex: 5 }
+
+        return (<><div className={cn.overlay} style={{ ...style, zIndex: 6 }}></div><img alt="" {...imgProps} /></>)
+    });
 };
 
 const NotesLayer = () => {

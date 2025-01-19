@@ -22,6 +22,10 @@ const useStyles = makeStyles(theme => ({
     position: "absolute", color: "aquamarine", width: "95%",
     borderBottom: "1.2px aquamarine solid", height: "1.5em"
   },
+  ts: {
+    position: "absolute", color: "yellow", width: "95%",
+    borderBottom: "1.2px yellow solid", height: "1.5em"
+  },
 }))
 
 const bottomstyle = (time: number) => ({ bottom: (MappingState.timeHeightFactor * time) + "px" })
@@ -70,12 +74,23 @@ const TimepointStart = () => {
   return useObserver(() => <>
     {scope.map.timepointlist.map(tp =>
       <div className={cn.timepoint} key={tp.id} style={bottomstyle(tp.time)}>
-        <div className={cn.time}>{TimeToString(tp.time)}</div>
+        {/* <div className={cn.time}>{TimeToString(tp.time)}</div> */}
         <div className={cn.bpm}>{tp.bpm}</div>
       </div>)}
   </>)
 }
 
+const TimescaleStart = () => {
+
+  const cn = useStyles()
+
+  return useObserver(() => <>
+    {scope.map.timescalelist.filter(({ tsgroup }) => /* MappingState.group === -10 ||  */MappingState.group === tsgroup).map(ts =>
+      <div className={cn.ts} key={ts.id} style={bottomstyle(ts.realtimecache)}>
+        <div className={cn.time}>{ts.timescale}x</div>
+      </div>)}
+  </>)
+}
 
 const GridLayer = () => {
   const cn = useLayerStyle()
@@ -84,6 +99,7 @@ const GridLayer = () => {
       <LaneAndTime />
       <DivisorLines />
       <TimepointStart />
+      <TimescaleStart />
     </div>)
 }
 

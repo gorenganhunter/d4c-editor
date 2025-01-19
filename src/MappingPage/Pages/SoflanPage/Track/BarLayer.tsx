@@ -60,11 +60,13 @@ const Bar = ({
 
     const handler = useMemo(() => clickHandler(slide), [slide]);
 
+    const dark = MappingState.group !== -10 && MappingState.group !== note.tsgroup
+
     const classname = note.islaser
-        ? cn.laser
+        ? dark ? cn.laserdark : cn.laser
         : note.lane == 0 || note.lane == 6
-        ? cn.stop
-        : cn.slidebar;
+        ? dark ? cn.stopdark : cn.stop
+        : dark ? cn.slidebardark : cn.slidebar;
 
     return <div className={classname} onClick={handler} style={style}></div>;
 };
@@ -100,14 +102,7 @@ const BarLayer = () => {
     const list = useObserver(() => {
         const list: React.ReactNode[] = [];
         forEachBar((from, to) =>
-            list.push(
-                <Bar
-                    key={from.id + ":" + to.id}
-                    from={from}
-                    to={to}
-                    layerWidth={layerWidth}
-                />
-            )
+            list.push(Bar({from, to, layerWidth}))
         );
         return list;
     });

@@ -49,6 +49,7 @@ class State {
 
   @observable slideNote1Beat: State["pointerBeat"]
   @observable slideNote1Lane = -1
+  @observable slideNote1Tsg = -1
 
   @observable preventClick = 0
 

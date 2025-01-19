@@ -141,6 +141,51 @@ const clickEventHandler = (nid: number) => {
         } else {
             switch (MappingState.tool) {
                 case "delete":
+                    if (MappingState.group === -10 && (note.lane == 0 || note.lane == 6)) {
+                        if (note.type === "flick") {
+                            const ts = scope.map.timescalelist.find(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == note.timepoint && offset == note.offset && tsgroup == -1 && timescale == -1 && disk == (note.lane == 0 ? 1 : 2)))
+                            if (ts) scope.map.removeTimescales([ts])
+                            
+                            const ts2 = scope.map.timescalelist.find(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == note.timepoint && offset == note.offset + 6 && tsgroup == -1 && timescale == 1 && disk == (note.lane == 0 ? 1 : 2)))
+                            if (ts2) scope.map.removeTimescales([ts2])
+                            
+                            const ts3 = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == note.timepoint && offset == note.offset && tsgroup == -1 && timescale == -1 && disk == 3))
+                            if (ts3 != -1) {
+                                const ts = scope.map.timescalelist[ts3]
+                                ts.disk = note.lane == 0 ? 2 : 1
+                                scope.map.timescalelist[ts3] = ts
+                            }
+                            
+                            const ts4 = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == note.timepoint && offset == note.offset + 6 && tsgroup == -1 && timescale == 1 && disk == 3))
+                            if (ts4 != -1) {
+                                const ts = scope.map.timescalelist[ts4]
+                                ts.disk = note.lane == 0 ? 2 : 1
+                                scope.map.timescalelist[ts4] = ts
+                            }
+                        } else if (note.type === "slide") {
+                            const slide = scope.map.slides.get(note.slide)
+                            const [note1, note2] = slide?.notes.map(id => scope.map.notes.get(id)).sort((a, b) => a!.realtimecache - b!.realtimecache)
+                            const ts = scope.map.timescalelist.find(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == note1!.timepoint && offset == note1!.offset && tsgroup == -1 && timescale == 0 && disk == (note1!.lane == 0 ? 1 : 2)))
+                            if (ts) scope.map.removeTimescales([ts])
+                            
+                            const ts2 = scope.map.timescalelist.find(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == note2!.timepoint && offset == note2!.offset && tsgroup == -1 && timescale == 1 && disk == (note2!.lane == 0 ? 1 : 2)))
+                            if (ts2) scope.map.removeTimescales([ts2])
+                            
+                            const ts3 = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == note1!.timepoint && offset == note1!.offset && tsgroup == -1 && timescale == 0 && disk == 3))
+                            if (ts3 != -1) {
+                                const ts = scope.map.timescalelist[ts3]
+                                ts.disk = note.lane == 0 ? 2 : 1
+                                scope.map.timescalelist[ts3] = ts
+                            }
+                            
+                            const ts4 = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == note2!.timepoint && offset == note2!.offset && tsgroup == -1 && timescale == 1 && disk == 3))
+                            if (ts4 != -1) {
+                                const ts = scope.map.timescalelist[ts4]
+                                ts.disk = note.lane == 0 ? 2 : 1
+                                scope.map.timescalelist[ts4] = ts
+                            }
+                        }
+                    }
                     removeNote(note);
                     break;
             }
@@ -183,15 +228,16 @@ const Note = ({ note }: { note: NoteType }) => {
     const onDoubleClick = useMemo(() => doubleClickHandler(note.id), [note.id]);
     const onClick = useMemo(() => clickEventHandler(note.id), [note.id]);
 
-    const props = useObserver(() => {
+    return useObserver(() => {
         const left = note.lane * 10 + 15 + "%";
         const bottom =
             MappingState.timeHeightFactor * note.realtimecache + "px";
+        const style = { left, bottom }
         let src: string;
         const n = scope.map.notes.get(note.id);
         if (!n) {
             // something strange with mobx action
-            return {};
+            return (<img alt="" />);
         }
         switch (note.type) {
             case "single":
@@ -224,8 +270,7 @@ const Note = ({ note }: { note: NoteType }) => {
             default:
                 neverHappen();
         }
-        return {
-            style: { left, bottom },
+        const imgProps: any = {
             src,
             draggable: false,
             className: cn.note,
@@ -234,9 +279,16 @@ const Note = ({ note }: { note: NoteType }) => {
             onDoubleClick,
             onClick,
         };
-    });
 
-    return <img alt="" {...props} />;
+        if (MappingState.group === -10 || MappingState.group === n.tsgroup) {
+            imgProps.style = style
+            return (<img alt="" {...imgProps} />)
+        }
+        
+        imgProps.style = { ...style, zIndex: 5 }
+
+        return (<><div className={cn.overlay} style={{ ...style, zIndex: 6 }}></div><img alt="" {...imgProps} /></>)
+    });
 };
 
 const NotesLayer = () => {
