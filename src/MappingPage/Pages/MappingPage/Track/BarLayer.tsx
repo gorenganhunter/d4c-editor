@@ -35,15 +35,17 @@ const Bar = ({
     from,
     to,
     layerWidth,
+    cn
 }: {
     from: NoteType;
     to: NoteType;
     layerWidth: number;
+    cn: any
 }) => {
     const note = from as SlideNote;
-    const cn = useNoteStyles();
+    // const cn = useNoteStyles();
 
-    const style = useObserver(() => {
+    const style = (() => {
         const bottom = from.realtimecache * MappingState.timeHeightFactor;
         const top = to.realtimecache * MappingState.timeHeightFactor;
         const dh = top - bottom;
@@ -54,11 +56,11 @@ const Bar = ({
             transform: `skew(${Math.atan2(dw, dh)}rad)`,
             left: (from.lane + to.lane) * 5 + (note.islaser ? 19.5 : 15) + "%",
         };
-    });
+    })();
 
     const slide = (from as SlideNote).slide;
 
-    const handler = useMemo(() => clickHandler(slide), [slide]);
+    const handler = /* useMemo(() =>  */clickHandler(slide)/* , [slide]); */
 
     const dark = MappingState.group !== -10 && MappingState.group !== note.tsgroup
 
@@ -84,6 +86,7 @@ const forEachBar = (cb: (from: SlideNote, to: SlideNote) => any) => {
 
 const BarLayer = () => {
     const cn = useStyles();
+    const noteCn = useNoteStyles();
     const layer = useMirror();
     const [layerWidth, setLayerWidth] = useState(100);
 
@@ -102,7 +105,7 @@ const BarLayer = () => {
     const list = useObserver(() => {
         const list: React.ReactNode[] = [];
         forEachBar((from, to) =>
-            list.push(Bar({from, to, layerWidth}))
+            list.push(Bar({from, to, layerWidth, cn: noteCn}))
         );
         return list;
     });
