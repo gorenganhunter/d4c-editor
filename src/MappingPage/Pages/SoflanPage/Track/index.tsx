@@ -193,7 +193,7 @@ const Track = () => {
   const { t } = useTranslation()
 
     const addTs = () => {
-        scope.map.addTimescale(MappingState.group, tsData.timepoint, tsData.offset, parseFloat(tsData.timescale) || 1, disk.left ? disk.right ? 3 : 1 : disk.right ? 2 : 0)
+        scope.map.addTimescale(MappingState.group, tsData.timepoint, tsData.offset, parseFloat(tsData.timescale) || 0, disk.left ? disk.right ? 3 : 1 : disk.right ? 2 : 0)
         setShowAddDialog(false)
     }
 
@@ -201,7 +201,7 @@ const Track = () => {
         if (!tsData.ts) return
         const ts = scope.map.timescales.get(tsData.ts)
         if (!ts) return
-        scope.map.editTimescale(ts, parseFloat(tsData.timescale) || 1, disk.left ? disk.right ? 3 : 1 : disk.right ? 2 : 0)
+        scope.map.editTimescale(ts, parseFloat(tsData.timescale) || 0, disk.left ? disk.right ? 3 : 1 : disk.right ? 2 : 0)
         setShowEditDialog(false)
     }
   return (
@@ -218,7 +218,7 @@ const Track = () => {
     <Dialog open={showAddDialog} onClose={() => setShowAddDialog(false)} classes={{ paper: cn.paper }}>
       <DialogTitle>Add TimeScale</DialogTitle>
       <DialogContent>
-          <TextField inputProps={{ type: "number" }} required autoFocus label="Timescale" value={tsData.timescale} onChange={e => setTsData({ ...tsData, timescale: e.target.value })} fullWidth />
+          <TextField inputProps={{ inputMode: "numeric" }} required autoFocus label="Timescale" value={tsData.timescale} onChange={e => setTsData({ ...tsData, timescale: e.target.value })} fullWidth />
             <FormGroup>
                         <h2>Select Disk</h2>
                         <FormControlLabel control={(<Checkbox checked={disk.left} onChange={e => setDisk({ ...disk, left: e.target.checked })} />)} label="Left" />
@@ -237,7 +237,7 @@ const Track = () => {
     <Dialog open={showEditDialog} onClose={() => setShowEditDialog(false)} classes={{ paper: cn.paper }}>
       <DialogTitle>Edit TimeScale</DialogTitle>
       <DialogContent>
-          <TextField inputProps={{ type: "number" }} required autoFocus label="Timescale" value={tsData.timescale} onChange={e => setTsData({ ...tsData, timescale: e.target.value })} fullWidth />
+          <TextField inputProps={{ inputMode: "numeric" }} required autoFocus label="Timescale" value={tsData.timescale} onChange={e => setTsData({ ...tsData, timescale: e.target.value })} fullWidth />
             <FormGroup>
                         <h2>Select Disk</h2>
                         <FormControlLabel control={(<Checkbox checked={disk.left} onChange={e => setDisk({ ...disk, left: e.target.checked })} />)} label="Left" />
