@@ -36,6 +36,13 @@ const flushPointerPos = action((e: MouseEvent | TouchEvent) => {
   }
 })
 
+const flushPointerPos2 = action((e: React.TouchEvent<HTMLDivElement>) => {
+    const touches = Array.from(e.changedTouches)
+    if (touches.length <= 0) return
+    state.pointerClientX = touches.reduce((a, b) => a + b.clientX, 0) / touches.length
+    state.pointerClientY = touches.reduce((a, b) => a + b.clientY, 0) / touches.length
+})
+
 let selectPointer = -1
 const handleDown = action((e: MouseEvent | TouchEvent) => {
   e.stopPropagation()
@@ -68,6 +75,7 @@ const stopSelect = action(() => {
   state.preventClick++
   setTimeout(() => state.preventClick--, 50)
 })
+
 window.addEventListener("mouseup", e => {
   if (e.button === selectPointer) stopSelect()
 })
@@ -182,6 +190,10 @@ const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
   }
 })
 
+const handleMoveTouch = (e: React.TouchEvent<HTMLDivElement>) => {
+  flushPointerPos2(e)
+}
+
 const Track = () => {
   const cn = useStyles()
 
@@ -208,7 +220,7 @@ const Track = () => {
 
   return (
     <div className={cn.track}>
-      <div className={cn.panel} ref={state.panelRef} onWheel={handleScroll} onClick={handleClick}>
+      <div className={cn.panel} ref={state.panelRef} onWheel={handleScroll} onClick={handleClick} onTouchMove={handleMoveTouch}>
         <GridLayer />
         <BarLayer />
         <NotesLayer />

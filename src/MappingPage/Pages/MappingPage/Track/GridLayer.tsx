@@ -6,6 +6,7 @@ import { useObserver } from "mobx-react-lite"
 import { range, TimeToString } from "../../../../Common/utils"
 import { useStyles as useLayerStyle } from "./styles"
 import { scope } from "../../../../MappingScope/scope"
+import { state } from "./state"
 
 const useStyles = makeStyles(theme => ({
   vertline: { borderLeft: "1.2px solid lightgray", height: "100%", position: "absolute", pointerEvents: "none" },
@@ -21,6 +22,10 @@ const useStyles = makeStyles(theme => ({
   timepoint: {
     position: "absolute", color: "aquamarine", width: "95%",
     borderBottom: "1.2px aquamarine solid", height: "1.5em"
+  },
+  cursorline: {
+    position: "absolute", color: "white", textAlign: "left", width: "85%",
+    borderBottom: "1.2px white solid", height: "1.5em"
   },
 }))
 
@@ -76,6 +81,16 @@ const TimepointStart = () => {
   </>)
 }
 
+const CursorPointer = () => {
+  const cn = useStyles()
+
+  return useObserver(() => <>{MappingState.tool === "none" && <>
+    <div className={cn.cursorline} style={bottomstyle(state.pointerTime)}>
+      <div className={cn.time}>{TimeToString(state.pointerTime)}</div>
+    </div></>}
+  </>)
+}
+
 
 const GridLayer = () => {
   const cn = useLayerStyle()
@@ -84,6 +99,7 @@ const GridLayer = () => {
       <LaneAndTime />
       <DivisorLines />
       <TimepointStart />
+      <CursorPointer />
     </div>)
 }
 
