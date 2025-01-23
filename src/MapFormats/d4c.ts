@@ -139,7 +139,7 @@ export function toD4CFormat(map: EditMap): D4CExport {
             LaneId: note.lane,
             Beat: beat,
             Type: D4CNoteType.Tap2,
-            TimeScaleGroupId: -1,
+            TimeScaleGroupId: note.tsgroup,
             NextId: 0,
             Direction: 0,
             EffectType: 0,
@@ -150,11 +150,9 @@ export function toD4CFormat(map: EditMap): D4CExport {
             switch (note.lane) {
                 case 0:
                     d4cNote.Type = D4CNoteType.Scratch;
-                    d4cNote.TimeScaleGroupId = -2
                     break;
                 case 6:
                     d4cNote.Type = D4CNoteType.Scratch;
-                    d4cNote.TimeScaleGroupId = -2
                     break;
                 default:
                     d4cNote.Type = D4CNoteType.Slide;
@@ -165,7 +163,6 @@ export function toD4CFormat(map: EditMap): D4CExport {
         } else if (note.type === "slide") {
             if (note.lane === 0 || note.lane === 6) {
                 d4cNote.Type = D4CNoteType.StopStart;
-                d4cNote.TimeScaleGroupId = -2
             }
             else if (note.islaser) {
                 d4cNote.Type = D4CNoteType.Slide;
@@ -183,7 +180,6 @@ export function toD4CFormat(map: EditMap): D4CExport {
                         break;
                     case D4CNoteType.StopStart:
                         d4cNote.Type = D4CNoteType.StopEnd;
-                        d4cNote.TimeScaleGroupId = -2
                         break;
                     default:
                         d4cNote.Type = D4CNoteType.Slide;
