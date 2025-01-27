@@ -208,6 +208,7 @@ const doubleClickHandler = (nid: number, setFlickDirDialog: React.Dispatch<React
 
             setFlickDir((note.direction || 0) + "")
             setFlickDirDialog(true)
+            state.preventClick++
             // const s = assert(scope.map.slides.get(note.slide));
             // if (note.id === s.notes[s.notes.length - 1])
             //     scope.map.toggleFlickend(s.id);
@@ -307,16 +308,17 @@ const NotesLayer = () => {
         const lastNote = assert(scope.map.notelist.filter(n => ((n.type === "slide" && n.islaser) || (n.type === "flick" && n.lane !== 0 && n.lane !== 6))).sort((a, b) => b.realtimecache - a.realtimecache)[0])
         if (lastNote.type === "slide" || lastNote.type === "flick") scope.map.setFaderDir(lastNote, parseInt(flickDir))
         setFlickDirDialog(false)
+        state.preventClick--
     }
 
     return useObserver(() => (<>
-    <Dialog open={flickDirDialog} onClose={() => setFlickDirDialog(false)} classes={{ paper: cn.paper }}>
+    <Dialog open={flickDirDialog} onClose={() => { setFlickDirDialog(false); setTimeout(() => state.preventClick--, 50); }} classes={{ paper: cn.paper }}>
       <DialogTitle>Edit Direction</DialogTitle>
       <DialogContent>
           <TextField inputProps={{ inputMode: "numeric" }} required autoFocus label="Direction" value={flickDir} onChange={e => setFlickDir(e.target.value)} fullWidth />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setFlickDirDialog(false)} color="secondary">
+        <Button onClick={() => { setFlickDirDialog(false); setTimeout(() => state.preventClick--, 50); }} color="secondary">
           {t("Close")}
         </Button>
         <Button onClick={setDir} color="primary">
