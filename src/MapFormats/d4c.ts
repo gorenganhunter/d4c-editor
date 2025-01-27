@@ -127,7 +127,9 @@ export function toD4CFormat(map: EditMap): D4CExport {
         (a: NoteType, b: NoteType) => {
             return getTimepoint(a.timepoint)?.time - getTimepoint(b.timepoint)?.time || a.offset - b.offset 
         }
-    );
+    )
+    
+    const lastDirFlickNote = assert(chartNotes.filter(n => ((n.type === "slide" && n.islaser) || (n.type === "flick" && n.lane !== 0 && n.lane !== 6))).sort((a, b) => b.realtimecache - a.realtimecache)[0])
 
     chartNotes.forEach((note) => {
         // const tp = assert(map.timepoints.get(note.timepoint));
@@ -194,6 +196,8 @@ export function toD4CFormat(map: EditMap): D4CExport {
                 d4cNote.NextId = next;
             }
         }
+
+        if (note.id === lastDirFlickNote.id) d4cNote.Direction = note.direction || 0
 
         chartData.NoteDataList.push(d4cNote);
     });

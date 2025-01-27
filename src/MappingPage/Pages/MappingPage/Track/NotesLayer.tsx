@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { NoteType } from "../../../../MappingScope/EditMap";
 import { MappingState } from "../sharedState";
 import { useStyles, useNoteStyles } from "./styles";
@@ -9,6 +9,8 @@ import { Music } from "../../../states";
 import { useMirror, state } from "./state";
 import { useObserver } from "mobx-react-lite";
 import { action } from "mobx";
+import { Dialog, DialogTitle, DialogContent, TextField, FormControlLabel, DialogActions, Button, FormGroup } from "@material-ui/core";
+import { useTranslation } from "react-i18next";
 
 let dragPointer = -1;
 const downEventHandler = action((nid: number) => {
@@ -193,20 +195,23 @@ const clickEventHandler = (nid: number) => {
     };
 };
 
-const doubleClickHandler = (nid: number) => {
+const doubleClickHandler = (nid: number, setFlickDirDialog: React.Dispatch<React.SetStateAction<boolean>>, setFlickDir: React.Dispatch<React.SetStateAction<string>>) => {
     return (e: React.MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
         if (state.preventClick) return;
         const note = assert(scope.map.notes.get(nid));
         if (note.type === "single") scope.map.toggleTap(note)
-        // if (note.type === "slide") {
-        //     const s = assert(scope.map.slides.get(note.slide));
-        //     if (note.id === s.notes[s.notes.length - 1])
-        //         scope.map.toggleFlickend(s.id);
-        // } else {
-        //     scope.map.toggleFlick(note);
-        // }
+        else {
+            const lastNote = assert(scope.map.notelist.filter(n => ((n.type === "slide" && n.islaser) || (n.type === "flick" && n.lane !== 0 && n.lane !== 6))).sort((a, b) => b.realtimecache - a.realtimecache)[0])
+            if (note.id !== lastNote.id) return
+
+            setFlickDir((note.direction || 0) + "")
+            setFlickDirDialog(true)
+            // const s = assert(scope.map.slides.get(note.slide));
+            // if (note.id === s.notes[s.notes.length - 1])
+            //     scope.map.toggleFlickend(s.id);
+        }
     };
 };
 
@@ -220,12 +225,12 @@ const contextMenuHandler = (nid: number) => {
     };
 };
 
-const Note = ({ note }: { note: NoteType }) => {
+const Note = ({ note, setFlickDirDialog, setFlickDir }: { note: NoteType, setFlickDirDialog: React.Dispatch<React.SetStateAction<boolean>>, setFlickDir: React.Dispatch<React.SetStateAction<string>> }) => {
     const cn = useNoteStyles();
 
     const onMouseDown = useMemo(() => downEventHandler(note.id), [note.id]);
     const onContextMenu = useMemo(() => contextMenuHandler(note.id), [note.id]);
-    const onDoubleClick = useMemo(() => doubleClickHandler(note.id), [note.id]);
+    const onDoubleClick = useMemo(() => doubleClickHandler(note.id, setFlickDirDialog, setFlickDir), [note.id]);
     const onClick = useMemo(() => clickEventHandler(note.id), [note.id]);
 
     return useObserver(() => {
@@ -294,14 +299,37 @@ const Note = ({ note }: { note: NoteType }) => {
 const NotesLayer = () => {
     const cn = useStyles();
     const layer = useMirror();
+    const { t } = useTranslation()
+    const [flickDirDialog, setFlickDirDialog] = useState<boolean>(false)
+    const [flickDir, setFlickDir] = useState<string>("0")
 
-    return useObserver(() => (
+    const setDir = () => {
+        const lastNote = assert(scope.map.notelist.filter(n => ((n.type === "slide" && n.islaser) || (n.type === "flick" && n.lane !== 0 && n.lane !== 6))).sort((a, b) => b.realtimecache - a.realtimecache)[0])
+        if (lastNote.type === "slide" || lastNote.type === "flick") scope.map.setFaderDir(lastNote, parseInt(flickDir))
+        setFlickDirDialog(false)
+    }
+
+    return useObserver(() => (<>
+    <Dialog open={flickDirDialog} onClose={() => setFlickDirDialog(false)} classes={{ paper: cn.paper }}>
+      <DialogTitle>Edit Direction</DialogTitle>
+      <DialogContent>
+          <TextField inputProps={{ inputMode: "numeric" }} required autoFocus label="Direction" value={flickDir} onChange={e => setFlickDir(e.target.value)} fullWidth />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setFlickDirDialog(false)} color="secondary">
+          {t("Close")}
+        </Button>
+        <Button onClick={setDir} color="primary">
+          {t("Save")}
+        </Button>
+      </DialogActions>
+    </Dialog >
         <div className={cn.layer} ref={layer}>
             {scope.map.notelist.map((n) => (
-                <Note key={n.id} note={n} />
+                <Note key={n.id} note={n} setFlickDir={setFlickDir} setFlickDirDialog={setFlickDirDialog} />
             ))}
         </div>
-    ));
+    </>));
 };
 
 export default NotesLayer;

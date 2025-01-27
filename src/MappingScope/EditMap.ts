@@ -33,11 +33,13 @@ export type TimedPosition = {
 export type SingleNote = {
   type: "single"
   alt: boolean
+  direction: number
 } & TimedPosition
 
 export type FlickNote = {
   type: "flick"
   alt: boolean
+  direction: number
 } & TimedPosition
 
 export type Slide = {

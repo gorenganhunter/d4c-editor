@@ -7,7 +7,7 @@ type SingleOrFlick = (SingleNote | FlickNote)
 
 const add = (map: EditMap, id: number, type: SingleOrFlick["type"], timepoint: number, offset: number, tsgroup: number, lane: number, alt: boolean) => {
   const note =
-    observable({ type: type as "single" | "", id, timepoint, offset, lane, realtimecache: 0, alt, tsgroup }) as SingleOrFlick
+    observable({ type: type as "single" | "", id, timepoint, offset, lane, realtimecache: 0, alt, tsgroup, direction: 0 }) as SingleOrFlick
 
   map.notes.set(note.id, note)
 
@@ -24,7 +24,7 @@ const del = (map: EditMap, id: number) => {
   return note
 }
 
-type PatchType = Partial<Pick<SingleOrFlick, "type" | "timepoint" | "offset" | "lane" | "tsgroup" | "alt">>
+type PatchType = Partial<Pick<SingleOrFlick, "type" | "timepoint" | "offset" | "lane" | "tsgroup" | "alt" | "direction">>
 
 const setv = (map: EditMap, id: number, patch: PatchType) => {
   const note = assert(map.notes.get(id))

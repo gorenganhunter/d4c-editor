@@ -1,4 +1,4 @@
-import { NoteType, SingleNote, FlickNote, FreshNoteCache, TimeScale } from "../EditMap"
+import { NoteType, SingleNote, FlickNote, FreshNoteCache, TimeScale, SlideNote } from "../EditMap"
 import { SingleFlickActions } from "./AtomActions/SingleFlick"
 import { randomId, assert, neverHappen } from "../../Common/utils"
 import { SlideActions } from "./AtomActions/Slide"
@@ -107,6 +107,14 @@ export class MapActions extends MapActionsBase {
     return this.done(this.history.doTransaction(() =>
       this.history.callAtom(SingleFlickActions.Set, note.id, {
         alt: !note.alt,
+      })))
+  }
+  
+  @action.bound
+  setFaderDir(note: SlideNote | FlickNote, dir: number) {
+    return this.done(this.history.doTransaction(() =>
+      this.history.callAtom(note.type === "slide" ? SlideNoteActions.Set : SingleFlickActions.Set, note.id, {
+        direction: dir
       })))
   }
   
