@@ -308,7 +308,7 @@ const NotesLayer = () => {
         const lastNote = assert(scope.map.notelist.filter(n => ((n.type === "slide" && n.islaser) || (n.type === "flick" && n.lane !== 0 && n.lane !== 6))).sort((a, b) => b.realtimecache - a.realtimecache)[0])
         if (lastNote.type === "slide" || lastNote.type === "flick") scope.map.setFaderDir(lastNote, parseInt(flickDir))
         setFlickDirDialog(false)
-        state.preventClick--
+        setTimeout(() => state.preventClick--, 50);
     }
 
     return useObserver(() => (<>
