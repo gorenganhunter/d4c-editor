@@ -27,6 +27,7 @@ import { addHotkey } from "../../../Common/hooks"
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText } from "@material-ui/core"
 import { state } from "../MappingPage/Track/state"
 import { scope } from "../../../MappingScope/scope"
+import { randomId } from "../../../Common/utils"
 
 const useStyles = makeStyles(theme => ({
   tools: {
@@ -189,7 +190,7 @@ const TimeScaleGroupTool = () => {
           <Button onClick={() => setShowDialog(false)} color="secondary">
             {t("Cancel")}
           </Button>
-          <Button onClick={() => { scope.map.addTsGroup(tsgName); setShowDialog(false) }} color="primary">
+          <Button onClick={() => { const id = randomId(); scope.map.addTsGroup(tsgName, id); MappingState.group = id; setShowDialog(false) }} color="primary">
             {t("Create")}
           </Button>
         </DialogActions>

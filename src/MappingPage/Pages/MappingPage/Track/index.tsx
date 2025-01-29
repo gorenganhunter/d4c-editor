@@ -14,6 +14,7 @@ import { scope } from "../../../../MappingScope/scope"
 import BarLayer from "./BarLayer"
 import WarningLayer from "./WarningLayer"
 import { binarySearch } from "../../../../Common/binarySearch"
+import { assert } from "../../../../Common/utils"
 
 const transY = (viewTime: number) => `translateY(${MappingState.timeHeightFactor * viewTime}px)`
 
@@ -125,17 +126,22 @@ const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
     case "flick":
       scope.map.addFlick(beat.timepoint.id, beat.offset, MappingState.group === -10 ? lane === 0 || lane === 6 ? -2 : -1 : MappingState.group, lane)
 
+
       if (lane == 0 || lane == 6) {
-          const i = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat?.timepoint.id && offset == beat?.offset && tsgroup == -1 && timescale == -1 && disk == (lane == 0 ? 2 : 1)))
-          if (i === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat?.offset, -1, lane == 0 ? 1 : 2)
+        let lastTs: any = scope.map.timescalelist.filter(ts => ts.tsgroup === -1).filter(ts => ts.realtimecache < beat!.realtime).sort((a, b) => b.realtimecache - a.realtimecache)[0]
+        if (!lastTs) lastTs = {timescale: 1}
+
+        if (lastTs.timescale === 0) return
+          const i = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat?.timepoint.id && offset == beat?.offset && tsgroup == -1 && timescale == -lastTs.timescale && disk == (lane == 0 ? 2 : 1)))
+          if (i === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat?.offset, -lastTs.timescale, lane == 0 ? 1 : 2)
           else {
             const tsc = scope.map.timescalelist[i]
             tsc.disk = 3
             scope.map.timescalelist[i] = tsc
           }
           
-          const ii = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat?.timepoint.id && offset == beat?.offset + 6 && tsgroup == -1 && timescale == 1 && disk == (lane == 0 ? 2 : 1)))
-          if (ii === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat?.offset + 6, 1, lane == 0 ? 1 : 2)
+          const ii = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat?.timepoint.id && offset == beat?.offset + 6 && tsgroup == -1 && timescale == lastTs.timescale && disk == (lane == 0 ? 2 : 1)))
+          if (ii === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat?.offset + 6, lastTs.timescale, lane == 0 ? 1 : 2)
           else {
             const tsc = scope.map.timescalelist[ii]
             tsc.disk = 3
@@ -150,7 +156,10 @@ const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
 
         if (beat.realtime < state.slideNote1Beat.realtime) [beat, state.slideNote1Beat, lane, state.slideNote1Lane] = [state.slideNote1Beat, beat, state.slideNote1Lane, lane]
 
+
         if (state.slideNote1Lane == 0 || state.slideNote1Lane == 6) {
+          let lastTs: any = scope.map.timescalelist.filter(ts => ts.tsgroup === -1).filter(ts => ts.realtimecache < state.slideNote1Beat!.realtime).filter(ts => ts.timescale).sort((a, b) => b.realtimecache - a.realtimecache)[0]
+          if (!lastTs) lastTs = {timescale: 1}
           const i = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == state.slideNote1Beat?.timepoint.id && offset == state.slideNote1Beat?.offset && tsgroup == -1 && timescale == 0 && disk == (lane == 0 ? 2 : 1)))
           if (i === -1) scope.map.addTimescale(-1, state.slideNote1Beat.timepoint.id, state.slideNote1Beat.offset, 0, lane == 0 ? 1 : 2)
           else {
@@ -159,8 +168,8 @@ const handleClick = action((e: React.MouseEvent<HTMLDivElement>) => {
             scope.map.timescalelist[i] = tsc
           }
           
-          const ii = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat?.timepoint.id && offset == beat?.offset && tsgroup == -1 && timescale == 1 && disk == (lane == 0 ? 2 : 1)))
-          if (ii === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat.offset, 1, lane == 0 ? 1 : 2)
+          const ii = scope.map.timescalelist.findIndex(({ timepoint, offset, tsgroup, timescale, disk }) => (timepoint == beat?.timepoint.id && offset == beat?.offset && tsgroup == -1 && timescale == lastTs.timescale && disk == (lane == 0 ? 2 : 1)))
+          if (ii === -1) scope.map.addTimescale(-1, beat.timepoint.id, beat.offset, lastTs.timescale, lane == 0 ? 1 : 2)
           else {
             const tsc = scope.map.timescalelist[ii]
             tsc.disk = 3

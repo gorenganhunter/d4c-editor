@@ -22,9 +22,9 @@ export class MapActions extends MapActionsBase {
   }
 
   @action.bound
-  addTsGroup(name: string) {
+  addTsGroup(name: string, id?: number) {
     return this.done(this.history.doTransaction(() =>
-      this.history.callAtom(TsGroupActions.Add, randomId(), name)
+      this.history.callAtom(TsGroupActions.Add, id || randomId(), name)
     ))
   }
 
