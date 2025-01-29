@@ -194,7 +194,7 @@ const TimeScaleGroupTool = () => {
           <Button onClick={() => setShowDialog(false)} color="secondary">
             {t("Cancel")}
           </Button>
-          <Button onClick={() => scope.map.addTsGroup(tsgName)} color="primary">
+          <Button onClick={() => { scope.map.addTsGroup(tsgName); setShowDialog(false) }} color="primary">
             {t("Create")}
           </Button>
         </DialogActions>
@@ -208,7 +208,7 @@ const TimeScaleGroupTool = () => {
           (<><Button onClick={() => setShowEditDialog(false)} color="secondary">
             {t("Cancel")}
           </Button>
-          <Button onClick={() => scope.map.editTsGroup(MappingState.group, tsgName)} color="primary">
+          <Button onClick={() => { scope.map.editTsGroup(MappingState.group, tsgName); setShowEditDialog(false) }} color="primary">
             {t("Save")}
           </Button></>)}
         </DialogActions>
@@ -221,7 +221,7 @@ const TimeScaleGroupTool = () => {
           <Button onClick={() => setShowDeleteDialog(false)} color="secondary">
             {t("Cancel")}
           </Button>
-          {(MappingState.group < 0 || (scope.map.notelist.find(({ tsgroup }) => tsgroup === MappingState.group) || scope.map.timescalelist.find(({ tsgroup }) => tsgroup === MappingState.group))) ? (<></>) : (<Button onClick={() => scope.map.removeTsGroup(MappingState.group)} color="primary">
+          {(MappingState.group < 0 || (scope.map.notelist.find(({ tsgroup }) => tsgroup === MappingState.group) || scope.map.timescalelist.find(({ tsgroup }) => tsgroup === MappingState.group))) ? (<></>) : (<Button onClick={() => { scope.map.removeTsGroup(MappingState.group); MappingState.group = -1; setShowDeleteDialog(false) }} color="primary">
             {t("Delete")}
           </Button>)}
         </DialogActions>
@@ -251,7 +251,7 @@ const TimeScaleGroupTool = () => {
         </Select>
         <Button onClick={() => {setShowDialog(true); setTsgName(`TsGroup ${scope.map.tsgrouplist.length - 2}`)}}>Add Group</Button>
       </FormControl>{(MappingState.group < 0) ? (<></>) :
-      (<><Button variant="text" onClick={() => setShowEditDialog(true)}>Edit</Button>
+      (<><Button variant="text" onClick={() => { setShowEditDialog(true); setTsgName(scope.map.tsgroups.get(MappingState.group)!.name) }}>Edit</Button>
       <Button variant="text" color="secondary" onClick={() => setShowDeleteDialog(true)}>Delete</Button></>)}
     </Grid>)
 }
