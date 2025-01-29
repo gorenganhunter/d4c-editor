@@ -24,7 +24,7 @@ const clickHandler = (slide: number) => {
             slide,
             beat.timepoint.id,
             beat.offset,
-            firstNote.tsgroup,
+            MappingState.group,
             lane,
             firstNote.islaser
         );
