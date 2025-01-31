@@ -21,7 +21,7 @@ const PointerPos = () => {
     if (state.pointerLane < 0) return
     const beat = state.pointerBeat
     if (!beat) return
-    let color = "#afafaf"
+    let color = "#9ca5b9"
     switch (MappingState.tool) {
       case "add": color = "#0088ff"; break
       case "edit": color = "#ff60a0"; break

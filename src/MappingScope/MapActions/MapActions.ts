@@ -43,6 +43,14 @@ export class MapActions extends MapActionsBase {
       this.history.callAtom(TsGroupActions.Remove, id)
     ))
   }
+  
+  @action.bound
+  setNoteTsGroup(note: NoteType, tsgroup: number) {
+    return this.done(this.history.doTransaction(() =>
+      this.history.callAtom(note.type === "slide" ? SlideNoteActions.Set : SingleFlickActions.Set, note.id, {
+        tsgroup
+      })))
+  }
 
   @action.bound
   moveTimepoint(timepoint: number, justifyFindNearest: boolean, justifydivision: number, time?: number, bpm?: number, bpb?: number) {

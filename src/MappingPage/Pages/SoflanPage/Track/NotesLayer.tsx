@@ -128,25 +128,26 @@ const handleUp = action((e: MouseEvent | TouchEvent) => {
 //     }
 // };
 
-// const clickEventHandler = (nid: number) => {
-//     return (e: React.MouseEvent) => {
-//         e.stopPropagation();
-//         e.preventDefault();
-//         // if (state.preventClick) return
-//         const note = assert(scope.map.notes.get(nid));
-//         if (e.ctrlKey) {
-//             if (state.selectedNotes.has(note.id))
-//                 state.selectedNotes.delete(note.id);
-//             else state.selectedNotes.add(note.id);
-//         } else {
-//             switch (MappingState.tool) {
-//                 case "delete":
-//                     removeNote(note);
-//                     break;
-//             }
-//         }
-//     };
-// };
+const clickEventHandler = (nid: number) => {
+    return (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        // if (state.preventClick) return
+        const note = assert(scope.map.notes.get(nid));
+        if (e.ctrlKey) {
+            if (state.selectedNotes.has(note.id))
+                state.selectedNotes.delete(note.id);
+            else state.selectedNotes.add(note.id);
+        } else {
+            switch (MappingState.tool) {
+                case "set":
+                    scope.map.setNoteTsGroup(note, MappingState.group === -10 ? (note.lane === 0 || note.lane === 6) ? -2 : -1 : MappingState.group)
+                    // removeNote(note);
+                    break;
+            }
+        }
+    };
+};
 
 // const doubleClickHandler = (nid: number) => {
 //     return (e: React.MouseEvent) => {
@@ -181,7 +182,7 @@ const Note = ({ note }: { note: NoteType }) => {
     // const onMouseDown = useMemo(() => downEventHandler(note.id), [note.id]);
     // const onContextMenu = useMemo(() => contextMenuHandler(note.id), [note.id]);
     // const onDoubleClick = useMemo(() => doubleClickHandler(note.id), [note.id]);
-    // const onClick = useMemo(() => clickEventHandler(note.id), [note.id]);
+    const onClick = useMemo(() => clickEventHandler(note.id), [note.id]);
 
     return useObserver(() => {
         const left = note.lane * 10 + 15 + "%";
@@ -229,6 +230,7 @@ const Note = ({ note }: { note: NoteType }) => {
             src,
             draggable: false,
             className: cn.note,
+            onClick
         };
 
         if (MappingState.group === -10 || MappingState.group === n.tsgroup) {

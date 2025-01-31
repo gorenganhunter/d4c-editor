@@ -24,7 +24,7 @@ import IconButton from "@material-ui/core/IconButton"
 import Switch from "@material-ui/core/Switch"
 import Typography from "@material-ui/core/Typography"
 import { addHotkey } from "../../../Common/hooks"
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText } from "@material-ui/core"
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, DialogContentText, Divider } from "@material-ui/core"
 import { state } from "../MappingPage/Track/state"
 import { scope } from "../../../MappingScope/scope"
 import { randomId } from "../../../Common/utils"
@@ -58,6 +58,7 @@ const SelectTool = () => {
   useEffect(() => addHotkey("2", () => MappingState.tool = "add"), [])
   useEffect(() => addHotkey("3", () => MappingState.tool = "edit"), [])
   useEffect(() => addHotkey("4", () => MappingState.tool = "delete"), [])
+  useEffect(() => addHotkey("5", () => MappingState.tool = "set"), [])
 
   return useObserver(() =>
     <Grid item>
@@ -88,6 +89,9 @@ const SelectTool = () => {
           title={t("Hotkey: {{ hotkey }}", { hotkey: "3" })} />
         <FormControlLabel value="delete" control={<Radio />}
           label={t("Delete")} title={t("Hotkey: {{ hotkey }}", { hotkey: "4 / Right click" })} />
+        <Divider />
+        <FormControlLabel value="set" control={<Radio />}
+          label={t("Set Note")} title={t("Hotkey: {{ hotkey }}", { hotkey: "5" })} />
       </RadioGroup>
     </Grid>)
 }
