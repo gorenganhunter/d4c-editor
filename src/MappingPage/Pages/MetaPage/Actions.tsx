@@ -11,6 +11,7 @@ import {openFile, downLoadFile, randomId} from "../../../Common/utils"
 // import {fromBBBv1Format} from "../../../MapFormats/bbbv1"
 import {toD4DJGameFormat, D4DJExport} from "../../../MapFormats/d4dj"
 import {toD4CFormat} from "../../../MapFormats/d4c"
+import {toSonolusLevelData} from "../../../MapFormats/sonolus"
 import {EditMap, NoteType, Slide, Timepoint} from "../../../MappingScope/EditMap"
 import i18n from "../../../i18n"
 import {Music} from "../../../MappingPage/states"
@@ -54,6 +55,17 @@ const exportD4C = () => {
     try {
         const content = toD4CFormat((scope.map as any).state)
         downLoadFile(content.chart, "chart_00000014.json")
+    } catch(error) {
+        openDialog(i18n.t("An error occurred during export"), i18n.t("" + error))
+        userMessage(i18n.t("Error export"), "error")
+        throw error
+    }
+}
+
+const exportSonolusLevelData = () => {
+    try {
+        const content = toSonolusLevelData((scope.map as any).state)
+        downLoadFile(new Blob([content.data], { type: "application/octet-stream" }), "LevelData")
     } catch(error) {
         openDialog(i18n.t("An error occurred during export"), i18n.t("" + error))
         userMessage(i18n.t("Error export"), "error")
@@ -260,6 +272,11 @@ const Actions = () => {
             <Grid item>
                 <Button fullWidth variant="outlined" onClick={exportD4C}>
                     {t("Download D4C Chart")}
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button fullWidth variant="outlined" onClick={exportSonolusLevelData}>
+                    {t("Download Sonolus Level Data")}
                 </Button>
             </Grid>
             <Grid item>
