@@ -156,27 +156,27 @@ const Track = () => {
     if (!beat || group == -10) return
     switch (MappingState.tool) {
       case "add":
-        setTsData({
-          timepoint: beat.timepoint.id,
-          offset: beat.offset,
-          timescale: 1 + "",
-          disk: 3
-        })
-                setDisk({ left: true, right: true })
-        setShowAddDialog(true)
-        break
-      case "edit":
         const ts = scope.map.timescalelist.find(({ timepoint, offset, tsgroup }) => timepoint === beat.timepoint.id && offset === beat.offset && tsgroup === MappingState.group)
-        if (!ts) return
-        setTsData({
-          timepoint: ts.timepoint,
-          offset: ts.offset,
-          timescale: ts.timescale + "",
-          disk: ts.disk,
-          ts: ts.id
-        })
-                setDisk({ left: ts.disk === 3 || ts.disk === 1, right: ts.disk === 3 || ts.disk === 2 })
-        setShowEditDialog(true)
+        if (ts) {
+          setTsData({
+            timepoint: ts.timepoint,
+            offset: ts.offset,
+            timescale: ts.timescale + "",
+            disk: ts.disk,
+            ts: ts.id
+          })
+                  setDisk({ left: ts.disk === 3 || ts.disk === 1, right: ts.disk === 3 || ts.disk === 2 })
+          setShowEditDialog(true)
+        } else {
+          setTsData({
+            timepoint: beat.timepoint.id,
+            offset: beat.offset,
+            timescale: 1 + "",
+            disk: 3
+          })
+                  setDisk({ left: true, right: true })
+          setShowAddDialog(true)
+        }
         break
       case "delete":
         const tsc = scope.map.timescalelist.find(({ timepoint, offset, tsgroup }) => timepoint === beat.timepoint.id && offset === beat.offset && tsgroup === MappingState.group)
